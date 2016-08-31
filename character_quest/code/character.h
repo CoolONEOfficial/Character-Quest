@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <ncursesall.h>
+#include <cassert>
 
 using namespace std;
 

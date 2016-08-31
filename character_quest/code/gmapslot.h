@@ -10,11 +10,14 @@ class GMapSlot
 public:
     explicit GMapSlot(chtype wSType = ' ', chtype wDType = ' ');
 
-    // Empty
-    bool empty();
-
     // Symbol
     chtype staticType, dynamicType;
+
+    // Free
+    bool free();
+
+    // Empty
+    bool empty();
 };
 
 #endif // _FILE_GMAPSLOT_

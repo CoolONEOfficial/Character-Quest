@@ -18,7 +18,7 @@ using namespace std;
 class Label
 {
 public:
-    Label(string lText = "Label", int lX = 0, int lY = 0, int lW = 80, int lH = 24, const Font *lFont = new Font(),
+    Label(string lText, int lX, int lY, int lW, int lH, const Font *lFont,
           bool lAnimation = true, float lAnimationSpeedMSecs = 0.075f, int lIndent = 2, bool lAlign = true);
 
     // Coords

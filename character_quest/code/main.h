@@ -1,21 +1,23 @@
 #ifndef _FILE_MAIN_
 #define _FILE_MAIN_
 
-#include "ctrlpointers.h"
+#include "savedelete.h"
 #include "systems.h"
 #include "rands.h"
 #include "screen.h"
-#include "mydebug.h"
 #include "keycodes.h"
 #include "timer.h"
-#include "gmapcategory.h"
-#include "gmapobject.h"
 #include "gmapslot.h"
 #include "gmap.h"
+#include "biome.h"
+#include "bobj.h"
+#include "bobjcat.h"
 #include "font.h"
 #include "scene.h"
 #include "pushmessage.h"
-
+#ifdef DEBUG
+    #include <qcoreapplication.h>
+#endif
 #include <ncursesall.h>
 #include <time.h>
 #include <fstream>
@@ -25,6 +27,9 @@
 using namespace std;
 
 // --------------------------- Main ---------------------------
+
+// Inits
+void initAll();
 
 // Update screen
 void update();
@@ -101,35 +106,18 @@ void initCharPairs();
 
 GMap *gMap[4];
 
-// Generate
-GMapSlot *generateSlot();
-void generateViewMap(GMap *gGMap);
-
 // Selected
 int selectedGMap;
 
 // View size
-const int indentX = 0,
-          indentY = 0;
-const int viewWidth = 80,
-          viewHeight = 24;
+const int gMapX = 0,
+          gMapY = 0;
+const int gMapWidth = 80,
+          gMapHeight = 24;
 
-// --------------------------- Categories ---------------------------
+// --------------------------- Biomes ---------------------------
 
-map <string, GMapCategory*> gMapCategoriesDynamic;
-map <string, GMapCategory*> gMapCategoriesStatic;
-
-// Luck
-float allGMapCategoriesLuck(map<string, GMapCategory *> gMapCategories);
-void setGMapCategoriesRealLuck(map<string, GMapCategory *> &sMapCategories);
-
-// Generate
-GMapCategory *generateCategory(map<string, GMapCategory *> gMapCategories);
-GMapCategory *generateCategoryStatic();
-GMapCategory *generateCategoryDynamic();
-
-// Luck find dynamic object
-float gMapObjectDynamicLuck;
+#include "biomes.h"
 
 #endif // _FILE_MAIN_
 

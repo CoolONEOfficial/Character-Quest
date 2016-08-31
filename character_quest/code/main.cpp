@@ -1,46 +1,19 @@
 #include "main.h"
 
-int main()//int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    // Init screen
-    initscr();
-
-    // ?
-    raw();
-
-    // Active all keys
-    keypad(stdscr, TRUE);
-
-    // Off cursor
-    curs_set(0);
-
-    // Off echos
-    noecho();
-
-    // Init colors
-    start_color();
-
-    // Set pairs
-    initCharPairs();
-
-    // No delay getch
-    nodelay(stdscr, TRUE);
+    #ifdef DEBUG
+        QCoreApplication a(argc, argv);
+    #endif
 
     // Shake Random
     srand(time(0));
 
-    // --------------------------- Set Default Vals ---------------------------
-
-    setScenes();
+    // Init
+    initAll();
 
     // Set time of out screensaver
     timerScreensaver = timer(5000);
-
-    // Init GMaps
-    for(int mGMap = 0; mGMap < 4; mGMap++)
-    {
-        gMap[mGMap] = new GMap();
-    }
 
     // Off deleting saves mode
     deleteSave = false;
@@ -48,39 +21,13 @@ int main()//int argc, char *argv[])
     // Clear selectedGMap
     selectedGMap = -1;
 
-    // Add Map Objects
-
-    // Dynamic
-
-    // Luck
-    gMapObjectDynamicLuck = 10.0;
-
-    // Create
-    gMapCategoriesDynamic["home"] = new GMapCategory(0.25);
-    gMapCategoriesDynamic["nature"] = new GMapCategory(100.0);
-
-    // Set
-
-    // Dynamic
-
-    gMapCategoriesDynamic["home"]->addObject(new GMapObject('H', 100, COLOR_YELLOW), "home");
-
-    gMapCategoriesDynamic["nature"]->addObject(new GMapObject('P', 100, COLOR_GREEN), "tree");
-
-    // Static
-
-    gMapCategoriesStatic["nature"] = new GMapCategory(100.0);
-
-    gMapCategoriesStatic["nature"]->addObject(new GMapObject('m', 90, COLOR_GREEN), "grass");
-    gMapCategoriesStatic["nature"]->addObject(new GMapObject('v', 10, COLOR_CYAN), "flower");
-
     // Read save
     readSaves();
 
-    // Start Game
-
     // Set Scene
     setScene(scene["screensaver"]);
+
+    // Start Game
 
     cpu = clock();
     do
@@ -130,9 +77,10 @@ int main()//int argc, char *argv[])
                 else if(keyEnter(keyStroke))
                 {
                     // Create save
-                    gMap[selectedGMap] = new GMap(selectedScene->label[1]->text);
+                    gMap[selectedGMap] = new GMap(biome["forest"], selectedScene->label[1]->text);
 
                     // To game
+
                     setScene(scene["game"]);
                 }
                 else
@@ -153,10 +101,6 @@ int main()//int argc, char *argv[])
     endwin();
 
     // Delete all
-
-    // Cats
-    SAVE_DEL_MAP(gMapCategoriesStatic);
-    SAVE_DEL_MAP(gMapCategoriesDynamic);
 
     // GMaps
     SAVE_DEL_MAS(gMap);
@@ -319,8 +263,13 @@ void update()
     drawMessages();
 
 //    // Debug texts
-//    move(0,5);
-//    printw("w:%f h:%f", scrWidth(), scrHeight());
+    move(1,1);
+    if(selectedGMap != -1)
+    {
+        printw("%c", gMap[selectedGMap]->biome->genCatStatic()->genObj()->type);
+    }
+//    if(selectedGMap >=0 && selectedGMap < 4)
+//        printw("genslot:%c\n", gMap[selectedGMap]->biome->genCatStatic()->genObj());
 //    move(1,5);
 //    printw("selectedGMap: %i", selectedGMap);
 //    move(2,5);
@@ -387,11 +336,8 @@ void drawScene(Scene *dScene)
 
     else if(dScene == scene["game"])
     {
-        // Generate GMap
-        generateViewMap(gMap[selectedGMap]);
-
         // Draw
-        gMap[selectedGMap]->draw(indentX, indentY, viewWidth, viewHeight);
+        gMap[selectedGMap]->draw(gMapX, gMapY, gMapWidth, gMapHeight);
     }
 
     // Pause
@@ -449,90 +395,6 @@ void setScene(Scene *sScene)
 
     // Set
     selectedScene = sScene;
-}
-
-GMapCategory *generateCategory(map <string, GMapCategory *> gMapCategories)
-{
-    // Generate category
-
-    GMapCategory *gCategory = new GMapCategory();
-
-    // Set real luck
-    setGMapCategoriesRealLuck(gMapCategories);
-
-    float random = randf(100);
-
-    // Select category
-
-    float saveLuck = 0;
-    for(auto mCat: gMapCategories)
-    {
-        if(random > saveLuck &&
-                random < saveLuck + mCat.second->realLuck)
-        {
-            // Return category
-            gCategory = mCat.second;
-            break;
-        }
-        else
-        {
-            // Next category
-            saveLuck += mCat.second->realLuck;
-        }
-    }
-
-    return gCategory;
-}
-
-GMapSlot *generateSlot()
-{
-    // Generate slot
-
-    GMapSlot *randSlot = new GMapSlot();
-
-    // Set dynamic
-    if(luck(gMapObjectDynamicLuck))
-    {
-        randSlot->dynamicType = generateCategoryDynamic()->generateObject()->type;
-    }
-
-    // Set static
-    randSlot->staticType = generateCategoryStatic()->generateObject()->type;
-
-    return randSlot;
-}
-
-void setGMapCategoriesRealLuck(map <string, GMapCategory *> &sMapCategories)
-{
-    // Set categories realLuck
-    for(auto &mCat: sMapCategories)
-    {
-        mCat.second->setRealLuck(allGMapCategoriesLuck(sMapCategories));
-    }
-}
-
-float allGMapCategoriesLuck(map <string, GMapCategory *> gMapCategories)
-{
-    // All categories dynamic luck
-    float allLuck = 0;
-    for(auto mCat: gMapCategories)
-    {
-        allLuck += mCat.second->luck;
-    }
-
-    return allLuck;
-}
-
-GMapCategory *generateCategoryStatic()
-{
-    // Generate static category
-    return generateCategory(gMapCategoriesStatic);
-}
-
-GMapCategory *generateCategoryDynamic()
-{
-    // Generate dynamic category
-    return generateCategory(gMapCategoriesDynamic);
 }
 
 void drawMessages()
@@ -676,7 +538,7 @@ void buttonClick()
                 if(deleteSave)
                 {
                     // Delete
-                    gMap[selectedButton]->clear();
+                    gMap[selectedButton] = new GMap();
 
                     // Message
                     message.push_back(new PushMessage("Deleted"));
@@ -713,23 +575,23 @@ void buttonClick()
     }
 }
 
-void generateViewMap(GMap *gGMap)
-{
-    // Generate view map
+//void generateViewMap(GMap *gGMap)
+//{
+//    // Generate view map
 
-    for(int mX = gGMap->cameraX(alignW(viewWidth)); mX < gGMap->cameraX(alignW(viewWidth)) + alignW(viewWidth); mX++)
-    {
-        for(int mY = gGMap->cameraY(alignH(viewHeight)); mY < gGMap->cameraY(alignH(viewHeight)) + alignH(viewHeight); mY++)
-        {
-            if(gGMap->slot.find(mX) == gGMap->slot.end() ||
-               gGMap->slot[mX].find(mY) == gGMap->slot[mX].end())
-            {
-                // Generate
-                gGMap->slot[mX][mY] = generateSlot();
-            }
-        }
-    }
-}
+//    for(int mX = gGMap->cameraX(alignW(gMapWidth)); mX < gGMap->cameraX(alignW(gMapWidth)) + alignW(gMapWidth); mX++)
+//    {
+//        for(int mY = gGMap->cameraY(alignH(gMapHeight)); mY < gGMap->cameraY(alignH(gMapHeight)) + alignH(gMapHeight); mY++)
+//        {
+//            if(gGMap->slot.find(mX) == gGMap->slot.end() ||
+//               gGMap->slot[mX].find(mY) == gGMap->slot[mX].end())
+//            {
+//                // Generate
+//                gGMap->slot[mX][mY] = generateSlot();
+//            }
+//        }
+//    }
+//}
 
 void saveSaves(string sFileName)
 {
@@ -753,17 +615,17 @@ void saveSaves(string sFileName)
         file<<" /player"<<endl;
 
         // GMap
-        for(auto& f1: gMap[mGMap]->slot)
+        for(auto& mX: gMap[mGMap]->slot)
         {
-            for(auto& f2: f1.second)
+            for(auto& mY: mX.second)
             {
                 file<<" slot"<<endl;
 
-                file<<"  x "<<f1.first<<endl;
-                file<<"  y "<<f2.first<<endl;
+                file<<"  x "<<mX.first<<endl;
+                file<<"  y "<<mY.first<<endl;
 
-                file<<"  sType "<<f2.second->staticType<<endl;
-                file<<"  dType "<<f2.second->dynamicType<<endl;
+                file<<"  sType "<<mY.second->staticType<<endl;
+                file<<"  dType "<<mY.second->dynamicType<<endl;
 
                 file<<" /slot"<<endl;
             }
@@ -941,4 +803,45 @@ void readSaves(string rFileName)
     }
 
     file.close();
+}
+
+void initAll()
+{
+    // --------------------------- Init All ---------------------------
+
+    // Init screen
+    initscr();
+
+    // Get keyboard control
+    raw();
+
+    // Active all keys
+    keypad(stdscr, TRUE);
+
+    // Off cursor
+    curs_set(0);
+
+    // Off echos
+    noecho();
+
+    // No delay getch
+    nodelay(stdscr, TRUE);
+
+    // Colors
+    start_color();
+
+    // Character pairs
+    initCharPairs();
+
+    // Scenes
+    initScenes();
+
+    // Biomes
+    initBiomes();
+
+    // GMaps
+    for(int mGMap = 0; mGMap < 4; mGMap++)
+    {
+        gMap[mGMap] = new GMap(biome["forest"]);
+    }
 }

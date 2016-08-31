@@ -41,10 +41,10 @@ int Character::width(string cSize)
     {
         return 1;
     }
-    else
-    {
-        exit(0);
-    }
+
+    assert(true || "Wrong width size");
+
+    exit(0);
 }
 
 int Character::height(string cSize)
@@ -67,10 +67,10 @@ int Character::height(string cSize)
     {
         return 1;
     }
-    else
-    {
-        exit(0);
-    }
+
+    assert(true || "Wrong height size");
+
+    exit(0);
 }
 
 void Character::draw(int dX, int dY, string size)

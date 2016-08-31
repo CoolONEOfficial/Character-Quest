@@ -1,47 +1,63 @@
-TEMPLATE = app
-CONFIG += console c++14
-CONFIG -= app_bundle
-CONFIG -= qt
+debug {
+    QT += core
+    QT -= gui
 
-HEADERS += \
-    button.h \
-    character.h \
-    gmapcategory.h \
-    gmapobject.h \
-    gmapslot.h \
-    keycodes.h \
-    main.h \
-    timer.h \
-    gmap.h \
-    label.h \
-    rands.h \
-    font.h \
-    fonts.h \
-    scene.h \
-    text.h \
-    scenes.h \
-    screen.h \
-    mydebug.h \
-    pushmessage.h \
-    ncursesall.h \
-    systems.h \
-    ctrlpointers.h
+    CONFIG += c++14
+
+    CONFIG += console
+    CONFIG -= app_bundle
+} else {
+    CONFIG += console c++14
+    CONFIG -= app_bundle
+
+    CONFIG -= qt
+}
+
+TEMPLATE = app
+
+TARGET = Character_Quest
 
 SOURCES += main.cpp \
+    bcat.cpp \
+    biome.cpp \
+    bobj.cpp \
     button.cpp \
     character.cpp \
-    gmapcategory.cpp \
-    gmapobject.cpp \
-    gmapslot.cpp \
-    timer.cpp \
-    gmap.cpp \
-    message.cpp \
-    label.cpp \
-    rands.cpp \
     font.cpp \
+    gmap.cpp \
+    gmapslot.cpp \
+    label.cpp \
+    message.cpp \
+    rands.cpp \
     scene.cpp \
+    screen.cpp \
     text.cpp \
-    screen.cpp
+    timer.cpp
+
+HEADERS += \
+    biome.h \
+    biomes.h \
+    bobj.h \
+    bobjcat.h \
+    button.h \
+    character.h \
+    font.h \
+    fonts.h \
+    gmap.h \
+    gmapslot.h \
+    keycodes.h \
+    label.h \
+    main.h \
+    ncursesall.h \
+    pushmessage.h \
+    rands.h \
+    savedelete.h \
+    scene.h \
+    scenes.h \
+    screen.h \
+    systems.h \
+    text.h \
+    timer.h
 
 # NCurses libs install:
 # Linux: sudo apt-get install libncursesw5-dev
@@ -60,4 +76,10 @@ win32 {
 
 unix:!macx {
     LIBS += -lncursesw
+}
+
+debug {
+  DEFINES += DEBUG
+} else {
+  DEFINES += RELEASE
 }

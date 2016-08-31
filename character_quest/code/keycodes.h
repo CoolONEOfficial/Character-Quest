@@ -65,7 +65,7 @@ bool keyArrowRight(int keyStroke)
     return false;
 }
 
-// F
+// Func
 
 bool keyFunc(int keyStroke, int kNum)
 {

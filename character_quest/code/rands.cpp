@@ -1,8 +1,10 @@
 #include "rands.h"
 
-float randf(float limit, float minPart)
+float randf(int limit, float minPart)
 {
     // Random float
+
+    assert(limit != 0);
 
     // Find minPart
     int part = 1;

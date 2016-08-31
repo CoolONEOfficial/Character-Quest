@@ -1,7 +1,7 @@
 #ifndef _FILE_SCENE_
 #define _FILE_SCENE_
 
-#include "ctrlpointers.h"
+#include "savedelete.h"
 #include "screen.h"
 #include "button.h"
 #include "label.h"

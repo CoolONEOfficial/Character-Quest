@@ -1,12 +1,12 @@
-#ifndef _FILE_CONTROL_POINTERS_
-#define _FILE_CONTROL_POINTERS_
+#ifndef _FILE_SAVE_DELETE_POINTERS_
+#define _FILE_SAVE_DELETE_POINTERS_
 
 #include <stdlib.h>
 #include <vector>
 
-// --------------------------- Control of pointers ---------------------------
+// --------------------------- Save delete ---------------------------
 
-// Save Delete pointer
+// Save delete
 #define SAVE_DEL(dPointer) \
     if(dPointer != NULL) \
 { \
@@ -14,19 +14,19 @@
     dPointer = NULL; \
 }
 
-// Save Delete mas pointers
+// Save delete mas
 #define SAVE_DEL_MAS(dVector) \
     for(auto &mVector: dVector) \
     { \
         SAVE_DEL(mVector); \
     }
 
-// Save Delete map pointers
+// Save delete map
 #define SAVE_DEL_MAP(dMap) \
     for(auto &mMap: dMap) \
     { \
         SAVE_DEL(mMap.second); \
     }
 
-#endif // _FILE_CONTROL_POINTERS_
+#endif // _FILE_SAVE_DELETE_POINTERS_
 

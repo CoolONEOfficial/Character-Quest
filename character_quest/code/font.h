@@ -1,7 +1,7 @@
 #ifndef _FILE_FONT_
 #define _FILE_FONT_
 
-#include "ctrlpointers.h"
+#include "savedelete.h"
 #include "character.h"
 
 #include <map>
@@ -13,7 +13,7 @@ using namespace std;
 class Font
 {
 public:
-    Font(map <char, Character*> fImage = {{}});
+    Font(map <char, Character*> fImage);
     Font(const Font *&cFont);
     ~Font();
 

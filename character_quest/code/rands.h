@@ -2,11 +2,12 @@
 #define _FILE_RANDS_
 
 #include <stdlib.h>
+#include <cassert>
 
 // --------------------------- Randoms ---------------------------
 
 // Float
-float randf(float limit, float minPart = 0.01);
+float randf(int limit, float minPart = 0.01);
 
 // Integer
 int randi(int limit);

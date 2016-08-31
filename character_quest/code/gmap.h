@@ -1,9 +1,10 @@
 #ifndef _FILE_GMAP_
 #define _FILE_GMAP_
 
-#include "ctrlpointers.h"
+#include "savedelete.h"
 #include "gmapslot.h"
 #include "screen.h"
+#include "biome.h"
 
 #include <ncursesall.h>
 #include <map>
@@ -16,22 +17,18 @@ using namespace std;
 class GMap
 {
 public:
-    GMap(string pName = "Empty");
+    GMap(Biome *gBiome = new Biome(), string gPlayerName = "Empty");
     ~GMap();
-
-    // Player Name
-    string playerName;
 
     // Slots
     map < int, map< int, GMapSlot*> > slot;
 
-    // Player coords
-    int playerX;
-    int playerY;
-
     // Camera coords
     int cameraX(int viewW);
     int cameraY(int viewH);
+
+    // Saved
+    bool saved;
 
     // From map to screen coords
     int toScrX(int mX, int viewW, int indentX);
@@ -41,17 +38,30 @@ public:
     int toMapX(int sX, int viewW, int indentX);
     int toMapY(int sY, int viewH, int indentY);
 
-    // Saved
-    bool saved;
+    // Draw
+    void draw(int dX, int dY, int dW, int dH);
+
+    // Biome
+    Biome *biome;
+
+    // Generate Slot
+    GMapSlot *genSlot();
 
     // Empty
     bool empty();
 
+    // --------------------------- Player ---------------------------
+
+    // Player Name
+    string playerName;
+
+    // Player coords
+    int playerX;
+    int playerY;
+
     // Move player
     bool movePlayer(string dir);
 
-    void draw(int dX, int dY, int dW, int dH);
-    void clear();
 };
 
 #endif // _FILE_GMAP_

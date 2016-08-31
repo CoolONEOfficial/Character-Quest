@@ -11,13 +11,12 @@ GMapSlot::GMapSlot(chtype wSType, chtype wDType)
 
 bool GMapSlot::empty()
 {
-    if(dynamicType == ' ')
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return dynamicType == ' ' &&
+            staticType == ' ';
+}
+
+bool GMapSlot::free()
+{
+    return dynamicType == ' ';
 }
 

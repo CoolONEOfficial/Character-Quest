@@ -15,7 +15,7 @@ using namespace std;
 map <string, Scene*> scene;
 
 // Set
-void setScenes()
+void initScenes()
 {
     // --------------------------- Screensaver ---------------------------
 
