@@ -1,8 +1,6 @@
 #ifndef _FILE_KEY_CODES_
 #define _FILE_KEY_CODES_
 
-#include "systems.h"
-
 #define DIFFERENT_ENG_CHARS 32
 #define LENGTH_ENG_ALPHABET 26
 #define FIRST_ENG_BIG_CHAR 65

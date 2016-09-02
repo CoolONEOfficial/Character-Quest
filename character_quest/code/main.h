@@ -2,7 +2,6 @@
 #define _FILE_MAIN_
 
 #include "savedelete.h"
-#include "systems.h"
 #include "rands.h"
 #include "screen.h"
 #include "keycodes.h"
