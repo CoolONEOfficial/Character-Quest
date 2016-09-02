@@ -19,7 +19,7 @@ class Label
 {
 public:
     Label(string lText, int lX, int lY, int lW, int lH, const Font *lFont,
-          bool lAnimation = true, float lAnimationSpeedMSecs = 0.075f, int lIndent = 2, bool lAlign = true);
+          bool lAnimation = true, float lAnimationSpeedMSecs = 0.01f, int lIndent = 2, bool lAlign = true);
 
     // Coords
     int x, y;

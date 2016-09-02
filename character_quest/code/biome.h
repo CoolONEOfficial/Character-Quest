@@ -15,8 +15,8 @@ class Biome
 {
 public:
     Biome(float bDynamiclLuck = 20.0f,
-          map <string, BObjCat*> bCatStatic = map<string, BObjCat*>(),
-          map <string, BObjCat*> bCatDynamic = map<string, BObjCat*>());
+          map <string, BObjCat*> bCatStatic = {},
+          map <string, BObjCat*> bCatDynamic = {});
 
     // Categories
     map <string, BObjCat*> catStatic, catDynamic;

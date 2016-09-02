@@ -14,7 +14,7 @@ using namespace std;
 class BObjCat
 {
 public:
-    BObjCat(float cLuck, map <string, BObj*> cObj);
+    BObjCat(float cLuck = 20.0f, map <string, BObj*> cObj = {});
 
     // Objects
     map <string, BObj*> obj;

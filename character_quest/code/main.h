@@ -15,10 +15,15 @@
 #include "font.h"
 #include "scene.h"
 #include "pushmessage.h"
+#include "ncursesall.h"
+
+#ifdef WINDOWS
+    #include "windows.h"
+#endif
+
 #ifdef DEBUG
     #include <qcoreapplication.h>
 #endif
-#include <ncursesall.h>
 #include <time.h>
 #include <fstream>
 #include <map>

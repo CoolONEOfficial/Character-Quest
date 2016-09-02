@@ -13,7 +13,7 @@ using namespace std;
 class Font
 {
 public:
-    Font(map <char, Character*> fImage);
+    Font(map <char, Character*> fImage = {});
     Font(const Font *&cFont);
     ~Font();
 

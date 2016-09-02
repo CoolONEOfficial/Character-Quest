@@ -2,15 +2,21 @@
 
 int main(int argc, char *argv[])
 {
-    #ifdef DEBUG
-        QCoreApplication a(argc, argv);
-    #endif
+#ifdef DEBUG
+    // Debugger
+    QCoreApplication a(argc, argv);
+#endif
+
+    // Init
+    initAll();
 
     // Shake Random
     srand(time(0));
 
-    // Init
-    initAll();
+#ifdef WINDOWS
+    // Change lang
+    PostMessage(GetForegroundWindow(), WM_INPUTLANGCHANGEREQUEST, 2, 0);
+#endif
 
     // Set time of out screensaver
     timerScreensaver = timer(5000);
@@ -262,26 +268,14 @@ void update()
     // Messages
     drawMessages();
 
-//    // Debug texts
-    move(1,1);
-    if(selectedGMap != -1)
-    {
-        printw("%c", gMap[selectedGMap]->biome->genCatStatic()->genObj()->type);
-    }
-//    if(selectedGMap >=0 && selectedGMap < 4)
-//        printw("genslot:%c\n", gMap[selectedGMap]->biome->genCatStatic()->genObj());
-//    move(1,5);
-//    printw("selectedGMap: %i", selectedGMap);
-//    move(2,5);
+    // Debug texts
+#ifdef DEBUG
+//    move(1,1);
 //    if(selectedGMap != -1)
 //    {
-//        printw("pX:%i pY:%i pName:%s",
-//               gMap[selectedGMap]->playerX,
-//               gMap[selectedGMap]->playerY,
-//               gMap[selectedGMap]->playerName.c_str());
+//        printw("%c", gMap[selectedGMap]->biome->genCatStatic()->genObj()->type);
 //    }
-//    move(4,5);
-//    printw("animText:%s", scene["savesNew"]->label[1]->text.c_str());
+#endif
 
     refresh();
 }
@@ -575,24 +569,6 @@ void buttonClick()
     }
 }
 
-//void generateViewMap(GMap *gGMap)
-//{
-//    // Generate view map
-
-//    for(int mX = gGMap->cameraX(alignW(gMapWidth)); mX < gGMap->cameraX(alignW(gMapWidth)) + alignW(gMapWidth); mX++)
-//    {
-//        for(int mY = gGMap->cameraY(alignH(gMapHeight)); mY < gGMap->cameraY(alignH(gMapHeight)) + alignH(gMapHeight); mY++)
-//        {
-//            if(gGMap->slot.find(mX) == gGMap->slot.end() ||
-//               gGMap->slot[mX].find(mY) == gGMap->slot[mX].end())
-//            {
-//                // Generate
-//                gGMap->slot[mX][mY] = generateSlot();
-//            }
-//        }
-//    }
-//}
-
 void saveSaves(string sFileName)
 {
     // Save
@@ -606,6 +582,16 @@ void saveSaves(string sFileName)
     for(int mGMap = 0; mGMap < 4; mGMap++)
     {
         file<<"gMap "<<mGMap<<endl;
+
+        // Biome
+        for(auto &mBiome: biome)
+        {
+            if(gMap[mGMap]->biome == mBiome.second)
+            {
+                file<<"biome "<<mBiome.first<<endl;
+                break;
+            }
+        }
 
         // Player coords
         file<<" player"<<endl;
@@ -701,9 +687,20 @@ void readSaves(string rFileName)
 
             if(rGMapB)
             {
+                // Biome
+                if(command == "biome")
+                {
+                    string rBiomeName;
+
+                    file>>rBiomeName;
+
+                    assert(biome.find(rBiomeName) != biome.end());
+                    rGMap->biome = biome[rBiomeName];
+                }
+
                 // Player
 
-                if(command == "player")
+                else if(command == "player")
                 {
                     rPlayerB = true;
                 }

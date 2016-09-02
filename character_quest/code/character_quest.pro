@@ -1,4 +1,7 @@
+# Initialize aplication
 debug {
+    # Qt application (for debugger)
+
     QT += core
     QT -= gui
 
@@ -7,6 +10,8 @@ debug {
     CONFIG += console
     CONFIG -= app_bundle
 } else {
+    # C++ application
+
     CONFIG += console c++14
     CONFIG -= app_bundle
 
@@ -17,6 +22,7 @@ TEMPLATE = app
 
 TARGET = Character_Quest
 
+# Files
 SOURCES += main.cpp \
     bcat.cpp \
     biome.cpp \
@@ -55,11 +61,12 @@ HEADERS += \
     scene.h \
     scenes.h \
     screen.h \
-    systems.h \
     text.h \
     timer.h
 
-# NCurses libs install:
+# NCurses lib
+
+# Instruction for intall:
 # Linux: sudo apt-get install libncursesw5-dev
 # Windows: Download PDCurses (from https://sourceforge.net/projects/pdcurses/files/pdcurses/3.4/pdcurs34.zip/download)
 #                Extract zip
@@ -78,8 +85,23 @@ unix:!macx {
     LIBS += -lncursesw
 }
 
+# Defines
+
+# Debug / Release
 debug {
   DEFINES += DEBUG
 } else {
   DEFINES += RELEASE
 }
+
+# Systems
+win32 {
+  DEFINES += WINDOWS
+} else {
+  DEFINES += LINUX
+}
+
+# Other
+
+# Icon
+win32:RC_FILE = resource.rc
