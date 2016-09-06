@@ -6,14 +6,6 @@
 
 // --------------------------- Save delete ---------------------------
 
-// Save delete
-#define SAVE_DEL(dPointer) \
-    if(dPointer != NULL) \
-{ \
-    delete &dPointer; \
-    dPointer = NULL; \
-}
-
 // Save delete mas
 #define SAVE_DEL_MAS(dVector) \
     for(auto &mVector: dVector) \
@@ -27,6 +19,14 @@
     { \
         SAVE_DEL(mMap.second); \
     }
+
+// Save delete
+#define SAVE_DEL(dPointer) \
+    if(dPointer != NULL) \
+{ \
+    delete &dPointer; \
+    dPointer = nullptr; \
+}
 
 #endif // _FILE_SAVE_DELETE_POINTERS_
 

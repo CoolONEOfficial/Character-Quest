@@ -13,10 +13,17 @@ using namespace std;
 class Font
 {
 public:
-    Font(map <char, Character*> fImage = {});
-    Font(const Font *&cFont);
+    Font(map <char, Character*> image_ = {});
+    Font(const Font *&font_);
     ~Font();
 
+    // --------------------------- Values ---------------------------
+
+    // Images
+    map <char, Character*> getImage();
+    void setImage(map <char, Character*> image_);
+
+private:
     // Images
     map <char, Character*> image;
 };

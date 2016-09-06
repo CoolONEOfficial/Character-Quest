@@ -3,21 +3,39 @@
 
 #include <ncursesall.h>
 
-// --------------------------- Game map slot ---------------------------
+// --------------------------- Game Map Slot ---------------------------
 
 class GMapSlot
 {
 public:
-    explicit GMapSlot(chtype wSType = ' ', chtype wDType = ' ');
-
-    // Symbol
-    chtype staticType, dynamicType;
+    explicit GMapSlot(chtype staticType_ = ' ', chtype dynamicType_ = ' ');
 
     // Free
-    bool free();
+    bool is_free();
 
     // Empty
-    bool empty();
+    bool is_empty();
+
+    // --------------------------- Values ---------------------------
+
+    // Types
+
+    // Static
+    chtype getStaticType();
+    void setStaticType(chtype staticType_);
+
+    // Dynamic
+    chtype getDynamicType();
+    void setDynamicType(chtype dynamicType_);
+
+private:
+    // Types
+
+    // Static
+    chtype staticType;
+
+    // Dynamic
+    chtype dynamicType;
 };
 
 #endif // _FILE_GMAPSLOT_

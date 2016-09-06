@@ -30,7 +30,6 @@ SOURCES += main.cpp \
     button.cpp \
     character.cpp \
     font.cpp \
-    gmap.cpp \
     gmapslot.cpp \
     label.cpp \
     message.cpp \
@@ -38,7 +37,11 @@ SOURCES += main.cpp \
     scene.cpp \
     screen.cpp \
     text.cpp \
-    timer.cpp
+    timer.cpp \
+    saveslot.cpp \
+    gmap.cpp \
+    gmapworld.cpp \
+    gmaphome.cpp
 
 HEADERS += \
     biome.h \
@@ -49,7 +52,6 @@ HEADERS += \
     character.h \
     font.h \
     fonts.h \
-    gmap.h \
     gmapslot.h \
     keycodes.h \
     label.h \
@@ -62,7 +64,11 @@ HEADERS += \
     scenes.h \
     screen.h \
     text.h \
-    timer.h
+    timer.h \
+    saveslot.h \
+    gmap.h \
+    gmapworld.h \
+    gmaphome.h
 
 # NCurses lib
 

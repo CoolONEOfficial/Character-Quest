@@ -1,50 +1,83 @@
 #include "bobjcat.h"
 
-BObjCat::BObjCat(float cLuck, map<string, BObj *> cObj)
+BObjCat::BObjCat(float luck_, map<string, BObj *> object_)
 {
     // Objects
-    obj = cObj;
+    setObjectMap(object_);
 
     // Luck
-    luck = cLuck;
+    setLuck(luck_);
 }
 
-float BObjCat::objLuck()
+float BObjCat::objectsLuck()
 {
     // Objects luck
 
     float oLuck = 0.0f;
-    for(auto mObj: obj)
+    for(auto mObj: object)
     {
-        oLuck += mObj.second->luck;
+        oLuck += mObj.second->getLuck();
     }
 
     return oLuck;
 }
 
-BObj *BObjCat::genObj()
+BObj *BObjCat::genObject()
 {
     // Generate object
 
-    assert(!obj.empty());
+    assert(!object.empty());
 
-    float random = randf(objLuck());
+    float random = randf(objectsLuck());
 
     float mObjLuck = 0.0f;
-    for(auto &mObj: obj)
+    for(auto &mObj: object)
     {
         if(random > mObjLuck &&
-                random < mObjLuck + mObj.second->luck)
+                random < mObjLuck + mObj.second->getLuck())
         {
             return mObj.second;
         }
         else
         {
-            mObjLuck += mObj.second->luck;
+            mObjLuck += mObj.second->getLuck();
         }
     }
 
-    assert(true || ("For skipped?!?" && false));
+    assert("For skipped?!?" && false);
 
-    exit(0);
+    exit(EXIT_FAILURE);
+}
+
+// --------------------------- Values ---------------------------
+
+// Object
+
+map<string, BObj *> BObjCat::getObject()
+{
+    // Get
+    return object;
+}
+void BObjCat::setObjectMap(map<string, BObj *> object_)
+{
+    // Set map
+    object = object_;
+}
+void BObjCat::setObject(string key_, BObj *value_)
+{
+    // Set Object
+    object[key_] = value_;
+}
+
+// Luck
+
+float BObjCat::getLuck()
+{
+    // Get
+    return luck;
+}
+void BObjCat::setLuck(float luck_)
+{
+    // Set
+    luck = luck_;
 }

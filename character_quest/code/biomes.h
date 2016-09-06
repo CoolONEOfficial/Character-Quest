@@ -7,9 +7,25 @@
 
 using namespace std;
 
+// --------------------------- Biomes ---------------------------
+
 map <string, Biome*> biome;
 
+void initBiomeForest();
+void initBiomeHome();
+
 void initBiomes()
+{
+    // Init biomes
+
+    // Forest
+    initBiomeForest();
+
+    // Home
+    initBiomeHome();
+}
+
+void initBiomeForest()
 {
     // --------------------------- Forest ---------------------------
 
@@ -94,6 +110,78 @@ void initBiomes()
     // --------------------------- Biome ---------------------------
 
     biome["forest"] = new Biome
+                                                (
+                                                10.0f,
+                                                sCatMap,
+                                                dCatMap
+                                                ); // Forest
+}
+
+void initBiomeHome()
+{
+    // --------------------------- Home ---------------------------
+
+    // --------------------------- Static categories ---------------------------
+
+    // Floor
+
+    // Map
+    map<string, BObj*> floorSCatMap =
+                                                    {
+                                                        {
+                                                        "floor", new BObj(100.0f, ACS_CKBOARD)
+                                                        }
+                                                    }; // Objects
+
+    // Category
+    BObjCat *floorSCat = new BObjCat
+                                                    (
+                                                        100.0f,
+                                                        floorSCatMap
+                                                    ); // Static nature category
+
+    // Map categories
+    map<string, BObjCat*> sCatMap =
+                                                    {
+                                                        {
+                                                        "floor", floorSCat
+                                                        }
+                                                    }; // Static categories
+
+    // --------------------------- Dynamic categories ---------------------------
+
+    // Furniture
+
+    // Map
+    map<string, BObj*> furnitureDCatMap =
+                                                   {
+                                                        {
+                                                        "table", new BObj(50.0f, 'H')
+                                                        },
+                                                        {
+                                                        "chair", new BObj(50.0f, 'Y')
+                                                        }
+                                                    }; // Objects
+
+
+    // Category
+    BObjCat *furnitureDCat = new BObjCat
+                                                    (
+                                                        100.0f,
+                                                        furnitureDCatMap
+                                                    ); // Dynamic furniture category
+
+    // Map categories
+    map<string, BObjCat*> dCatMap =
+                                                    {
+                                                        {
+                                                            "furniture", furnitureDCat
+                                                        }
+                                                    }; // Dynamic categories
+
+    // --------------------------- Biome ---------------------------
+
+    biome["home"] = new Biome
                                                 (
                                                 10.0f,
                                                 sCatMap,

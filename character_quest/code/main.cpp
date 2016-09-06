@@ -25,10 +25,10 @@ int main(int argc, char *argv[])
     deleteSave = false;
 
     // Clear selectedGMap
-    selectedGMap = -1;
+    selectedSaveSlot = -1;
 
     // Read save
-    readSaves();
+    loadSaves();
 
     // Set Scene
     setScene(scene["screensaver"]);
@@ -74,16 +74,20 @@ int main(int argc, char *argv[])
             {
                 if(keyBackspace(keyStroke))
                 {
-                    if(!selectedScene->label[1]->text.empty())
+                    if(!selectedScene->getLabel()[1]->getText().empty())
                     {
                         // Backspace
-                        selectedScene->label[1]->text.pop_back();
+                        string newText = selectedScene->getLabel()[1]->getText();
+                        newText.pop_back();
+
+                        selectedScene->getLabel()[1]->setText(newText);
                     }
                 }
                 else if(keyEnter(keyStroke))
                 {
                     // Create save
-                    gMap[selectedGMap] = new GMap(biome["forest"], selectedScene->label[1]->text);
+                    saveSlot[selectedSaveSlot] = new SaveSlot(new GMapWorld(biome["forest"]), selectedScene->getLabel()[1]->getText());
+                    saveSlot[selectedSaveSlot]->gMap.setEmptyGMapHome(new GMapHome(biome["home"]));
 
                     // To game
 
@@ -92,11 +96,14 @@ int main(int argc, char *argv[])
                 else
                 {
                     // Valid keyChar?
-                    if(selectedScene->label[1]->font->image.find(keyChar) !=
-                       selectedScene->label[1]->font->image.end())
+                    if(selectedScene->getLabel()[1]->getFont()->getImage().find(keyChar) !=
+                       selectedScene->getLabel()[1]->getFont()->getImage().end())
                     {
                         // Add keyChar
-                        selectedScene->label[1]->text.push_back(keyChar);
+                        string newText = selectedScene->getLabel()[1]->getText();
+                        newText.push_back(keyChar);
+
+                        selectedScene->getLabel()[1]->setText(newText);
                     }
                 }
             }
@@ -109,7 +116,7 @@ int main(int argc, char *argv[])
     // Delete all
 
     // GMaps
-    SAVE_DEL_MAS(gMap);
+    SAVE_DEL_MAS(saveSlot);
 
     // Messages
     SAVE_DEL_MAS(message);
@@ -127,7 +134,7 @@ void keysCommand(int keyStroke)
         // Up
         if(keyEng('w', keyStroke))
         {
-           if(!gMap[selectedGMap]->movePlayer("up"))
+           if(!saveSlot[selectedSaveSlot]->gMap.movePlayerUp()->is_free())
            {
                message.push_back(new PushMessage("You don't move up"));
            }
@@ -136,7 +143,7 @@ void keysCommand(int keyStroke)
         // Down
         else if(keyEng('s', keyStroke))
         {
-            if(!gMap[selectedGMap]->movePlayer("down"))
+            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerDown()->is_free())
             {
                 message.push_back(new PushMessage("You don't move down"));
             }
@@ -145,7 +152,7 @@ void keysCommand(int keyStroke)
         // Left
         else if(keyEng('a', keyStroke))
         {
-            if(!gMap[selectedGMap]->movePlayer("left"))
+            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerLeft()->is_free())
             {
                 message.push_back(new PushMessage("You don't move left"));
             }
@@ -154,7 +161,7 @@ void keysCommand(int keyStroke)
         // Right
         else if(keyEng('d', keyStroke))
         {
-            if(!gMap[selectedGMap]->movePlayer("right"))
+            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerRight()->is_free())
             {
                 message.push_back(new PushMessage("You don't move right"));
             }
@@ -218,7 +225,7 @@ void keysCommand(int keyStroke)
     }
 
     // Buttons
-    if(!selectedScene->button.empty())
+    if(!selectedScene->getButton().empty())
     {
         // Select left button
         if(keyEng('a', keyStroke))
@@ -232,7 +239,7 @@ void keysCommand(int keyStroke)
         // Select right button
         else if(keyEng('d',  keyStroke))
         {
-            if(selectedButton < selectedScene->button.size()-1)
+            if(selectedButton < selectedScene->getButton().size()-1)
             {
                 selectedButton++;
             }
@@ -249,9 +256,9 @@ void keysCommand(int keyStroke)
 void update()
 {
     // Tact animations texts
-    if(!selectedScene->label.empty())
+    if(!selectedScene->getLabel().empty())
     {
-        for(auto mLabel: selectedScene->label)
+        for(auto mLabel: selectedScene->getLabel())
         {
             mLabel->animationTact();
         }
@@ -331,7 +338,7 @@ void drawScene(Scene *dScene)
     else if(dScene == scene["game"])
     {
         // Draw
-        gMap[selectedGMap]->draw(gMapX, gMapY, gMapWidth, gMapHeight);
+        saveSlot[selectedSaveSlot]->gMap.draw(gMapX, gMapY, gMapWidth, gMapHeight);
     }
 
     // Pause
@@ -372,16 +379,16 @@ void initCharPairs()
 void setScene(Scene *sScene)
 {
     // Text animation
-    if(!sScene->label.empty())
+    if(!sScene->getLabel().empty())
     {
         // Stop all texts animations
-        for(auto &mLabel: sScene->label)
+        for(auto &mLabel: sScene->getLabel())
         {
             mLabel->animationStop();
         }
 
         // Start first text animation
-        sScene->label[0]->animationStart();
+        sScene->getLabel()[0]->animationStart();
     }
 
     // Select button
@@ -397,10 +404,10 @@ void drawMessages()
 
     for(size_t mMsg = 0; mMsg < message.size(); mMsg++)
     {
-        if(!message[mMsg]->deleteTimer->finished())
+        if(!message[mMsg]->getDeleteTimer().finished())
         {
             move(scrHeight() - 1 - mMsg, 0);
-            printw("%s",message[mMsg]->text.c_str());
+            printw("%s",message[mMsg]->getText().c_str());
         }
         else
         {
@@ -418,20 +425,20 @@ void buttonClick()
     if(selectedScene == scene["main"])
     {
         // Play
-        if(selectedScene->button[selectedButton]->name == "Play")
+        if(selectedScene->getButton()[selectedButton]->getName() == "Play")
         {
             setScene(scene["saves"]);
-            readSaves();
+            loadSaves();
         }
 
         // Continue
-        else if(selectedScene->button[selectedButton]->name == "Continue")
+        else if(selectedScene->getButton()[selectedButton]->getName() == "Continue")
         {
-            if(selectedGMap != -1 &&
-                    !gMap[selectedGMap]->empty())
+            if(selectedSaveSlot != -1 &&
+                    !saveSlot[selectedSaveSlot]->is_empty())
             {
                 // Continue game
-                readSaves();
+                loadSaves();
                 setScene(scene["game"]);
             }
             else
@@ -446,10 +453,10 @@ void buttonClick()
     else if(selectedScene == scene["gamePause"])
     {
         // Exit to main
-        if(selectedScene->button[selectedButton]->name == "Main")
+        if(selectedScene->getButton()[selectedButton]->getName() == "Main")
         {
             // To main
-            if(gMap[selectedGMap]->saved)
+            if(saveSlot[selectedSaveSlot]->saved())
             {
                 setScene(scene["main"]);
             }
@@ -460,7 +467,7 @@ void buttonClick()
         }
 
         // Save
-        else if(selectedScene->button[selectedButton]->name == "Save")
+        else if(selectedScene->getButton()[selectedButton]->getName() == "Save")
         {
             saveSaves("save.txt");
         }
@@ -471,15 +478,15 @@ void buttonClick()
     else if(selectedScene == scene["mainExit"])
     {
         // No
-        if(selectedScene->button[selectedButton]->name == "No")
+        if(selectedScene->getButton()[selectedButton]->getName() == "No")
         {
             setScene(scene["main"]);
         }
 
         // Yes
-        else if(selectedScene->button[selectedButton]->name == "Yes")
+        else if(selectedScene->getButton()[selectedButton]->getName() == "Yes")
         {
-            exit(0);
+            exit(EXIT_SUCCESS);
         }
     }
 
@@ -488,14 +495,14 @@ void buttonClick()
     else if(selectedScene == scene["gamePauseExit"])
     {
         // Save and exit
-        if(selectedScene->button[selectedButton]->name == "Save and exit")
+        if(selectedScene->getButton()[selectedButton]->getName() == "Save and exit")
         {
             saveSaves("save.txt");
             setScene(scene["main"]);
         }
 
         // Exit unsaved
-        else if(selectedScene->button[selectedButton]->name == "Exit unsaved")
+        else if(selectedScene->getButton()[selectedButton]->getName() == "Exit unsaved")
         {
             setScene(scene["main"]);
         }
@@ -505,50 +512,59 @@ void buttonClick()
 
     else if(selectedScene == scene["saves"])
     {
-        if(selectedScene->button[selectedButton]->name == "Delete" ||
-                selectedScene->button[selectedButton]->name == "Cancel")
+        if(selectedScene->getButton()[selectedButton]->getName() == "Delete" ||
+                selectedScene->getButton()[selectedButton]->getName() == "Cancel")
         {
             // To delete/load save
             deleteSave = !deleteSave;
 
+            // Rename button
+
+            // New button
+            Button* newButton =  selectedScene->getButton()[selectedButton];
+
             if(deleteSave)
             {
-                // Set this button name "Cancel"
-                selectedScene->button[selectedButton]->name = "Cancel";
+                // Set name "Cancel"
+                newButton->setName("Cancel");
             }
             else
             {
-                // Set this button name "Delete"
-                selectedScene->button[selectedButton]->name = "Delete";
+                // Set name "Delete"
+                newButton->setName("Cancel");
             }
+
+            // Set
+            selectedScene->setButton(selectedButton, newButton);
         }
         else
         {
             // Select GMap
-            selectedGMap = selectedButton;
+            selectedSaveSlot = selectedButton;
 
-            if(!gMap[selectedButton]->empty())
+            if(!saveSlot[selectedButton]->is_empty())
             {
                 if(deleteSave)
                 {
                     // Delete
-                    gMap[selectedButton] = new GMap();
+                    saveSlot[selectedButton] = new SaveSlot(new GMapWorld(biome["forest"], new GMapHome(biome["home"])));
 
                     // Message
                     message.push_back(new PushMessage("Deleted"));
 
                     // Button Cancel
-                    selectedButton = selectedScene->buttonId["Delete"];
+                    selectedButton = selectedScene->getButtonId()["Delete"];
                     buttonClick();
 
                     // Update saves/buttons
                     saveSaves();
-                    readSaves();
+                    loadSaves();
                 }
                 else
                 {
                     // To game
                     setScene(scene["game"]);
+                    saveSlot[selectedSaveSlot]->gMap.setSaved(true);
                 }
             }
             else
@@ -561,7 +577,14 @@ void buttonClick()
                 else
                 {
                     // First game
-                    scene["savesNew"]->label[1]->text.clear();
+
+                    // Clear label
+                    Label *newLabel = scene["savesNew"]->getLabel()[1];
+                    newLabel->setText(string());
+
+                    scene["savesNew"]->setLabel(1, newLabel);
+
+                    // Set scene
                     setScene(scene["savesNew"]);
                 }
             }
@@ -576,225 +599,405 @@ void saveSaves(string sFileName)
     ofstream file(sFileName.c_str());
 
     // Old selected gMap
-    file<<"oldGMap "<<selectedGMap<<endl;
+    file<<"oldSaveSlot "<<selectedSaveSlot<<endl;
 
     // GMaps
-    for(int mGMap = 0; mGMap < 4; mGMap++)
+    for(int mSave = 0; mSave < saveSlotNum; mSave++)
     {
-        file<<"gMap "<<mGMap<<endl;
+        // SaveSlot number
+        file<<"saveSlot "<<mSave<<endl;
 
-        // Biome
-        for(auto &mBiome: biome)
-        {
-            if(gMap[mGMap]->biome == mBiome.second)
-            {
-                file<<"biome "<<mBiome.first<<endl;
-                break;
-            }
-        }
+            // Player name
+            file<<" playerName "<<saveSlot[mSave]->playerName<<endl;
 
-        // Player coords
-        file<<" player"<<endl;
-        file<<"  name "<<gMap[mGMap]->playerName<<endl;
-        file<<"  x "<<gMap[mGMap]->playerX<<endl;
-        file<<"  y "<<gMap[mGMap]->playerY<<endl;
-        file<<" /player"<<endl;
+            file<<" gMapWorld"<<endl;
 
-        // GMap
-        for(auto& mX: gMap[mGMap]->slot)
-        {
-            for(auto& mY: mX.second)
-            {
-                file<<" slot"<<endl;
+                // Biome name
+                for(auto &mBiome: biome)
+                {
+                    if(saveSlot[mSave]->gMap.getBiome() == mBiome.second)
+                    {
+                        file<<"  biome "<<mBiome.first<<endl;
+                        break;
+                    }
+                }
 
-                file<<"  x "<<mX.first<<endl;
-                file<<"  y "<<mY.first<<endl;
+                // Player coords
+                file<<"  player"<<endl;
 
-                file<<"  sType "<<mY.second->staticType<<endl;
-                file<<"  dType "<<mY.second->dynamicType<<endl;
+                    file<<"   x "<<saveSlot[mSave]->gMap.getPlayerX()<<endl;
+                    file<<"   y "<<saveSlot[mSave]->gMap.getPlayerY()<<endl;
 
-                file<<" /slot"<<endl;
-            }
-        }
+                file<<"  /player"<<endl;
 
-        file<<"/gMap"<<endl;
+                // GMap slots
+                for(auto mX: saveSlot[mSave]->gMap.getSlot())
+                {
+                    for(auto mY: mX.second)
+                    {
+                        file<<"  gMapSlot"<<endl;
 
-        gMap[mGMap]->saved = true;
+                            file<<"   x "<<mX.first<<endl;
+                            file<<"   y "<<mY.first<<endl;
+
+                            file<<"   sType "<<mY.second->getStaticType()<<endl;
+                            file<<"   dType "<<mY.second->getDynamicType()<<endl;
+
+                        file<<"  /gMapSlot"<<endl;
+                    }
+                }
+
+                // Home
+                for(auto mHomeX: saveSlot[mSave]->gMap.getGMapHome())
+                {
+                    for(auto mHomeY: mHomeX.second)
+                    {
+                        file<<"  gMapHome"<<endl;
+
+                            // Biome name
+                            for(auto &mBiome: biome)
+                            {
+                                if(mHomeY.second->getBiome() == mBiome.second)
+                                {
+                                    file<<"  biome "<<mBiome.first<<endl;
+                                    break;
+                                }
+                            }
+
+                            // Coords
+                            file<<"   x "<<mHomeX.first<<endl;
+                            file<<"   y "<<mHomeY.first<<endl;
+
+                            // Wall type
+                            file<<"   wallType "<<mHomeY.second->getWallType().getDynamicType();
+
+                            // Slots
+                            for(auto mX: mHomeY.second->getSlot())
+                            {
+                                for(auto mY: mX.second)
+                                {
+                                    file<<"   gMapSlot"<<endl;
+
+                                        file<<"    x "<<mX.first<<endl;
+                                        file<<"    y "<<mY.first<<endl;
+
+                                        file<<"    sType "<<mY.second->getStaticType()<<endl;
+                                        file<<"    dType "<<mY.second->getDynamicType()<<endl;
+
+                                    file<<"   /gMapSlot"<<endl;
+                                }
+                            }
+
+                        file<<"  /gMapHome"<<endl;
+                    }
+                }
+
+            file<<" /gMapWorld"<<endl;
+
+        file<<"/saveSlot"<<endl;
+
+        // Saved bool
+        saveSlot[mSave]->gMap.setSaved(true);
     }
 
     file.close();
 
+    // Message
     message.push_back(new PushMessage("Saved"));
 }
 
-void readSaves(string rFileName)
+void loadSaves(string rFileName)
 {
     // Read Saves
 
     ifstream file(rFileName.c_str());
 
-    bool rGMapB = false;
-    GMap *rGMap = new GMap;
-    int rGMapNum = 0;
-    bool rPlayerB = false;
-    bool rSlotB = false;
-    GMapSlot *rSlot = new GMapSlot;
-    int rSlotX;
-    int rSlotY;
-
     if(file.is_open())
     {
+        // Command
+        string command;
+
         while(!file.fail())
         {
             // Get command
-            string command;
             file>>command;
+
+            // Old SaveSlot Num
+            if(command == "oldSaveSlot")
+            {
+                // Select old save
+                file>>selectedSaveSlot;
+            }
 
             // SaveSlot
 
-            if(command == "gMap")
+            if(command == "saveSlot")
             {
-                rGMapB = true;
-                rGMap = new GMap;
+                // Clear
+                SaveSlot* rSaveSlot = new SaveSlot(new GMapWorld(biome["forest"], new GMapHome(biome["home"])));
+                int rSaveSlotNum = 0;
 
-                // Num
-                int num;
-                file>>num;
+                // Read num
+                file>>rSaveSlotNum;
 
-                rGMapNum = num;
-            }
-
-            else if(command == "/gMap")
-            {
-                rGMapB = false;
-                gMap[rGMapNum] = rGMap;
-
-                // Set button name
-                scene["saves"]->button[rGMapNum]->name = rGMap->playerName;
-            }
-
-            // Old GMap
-            else if(command == "oldGMap")
-            {
-                int oldGMap;
-                file>>oldGMap;
-
-                // Select old GMap
-                selectedGMap = oldGMap;
-            }
-
-            // SaveSlot commands
-
-            if(rGMapB)
-            {
-                // Biome
-                if(command == "biome")
+                // Read
+                do
                 {
-                    string rBiomeName;
+                    file>>command;
 
-                    file>>rBiomeName;
-
-                    assert(biome.find(rBiomeName) != biome.end());
-                    rGMap->biome = biome[rBiomeName];
-                }
-
-                // Player
-
-                else if(command == "player")
-                {
-                    rPlayerB = true;
-                }
-
-                else if( command == "/player")
-                {
-                    rPlayerB = false;
-                }
-
-                // Player commands
-
-                if(rPlayerB)
-                {
-                    if(command == "name")
+                    // Player Name
+                    if(command == "playerName")
                     {
-                        string pName;
-                        file>>pName;
-
-                        rGMap->playerName = pName;
+                        // Set player name
+                        file>>rSaveSlot->playerName;
                     }
 
-                    // X
-                    else if(command == "x")
-                    {
-                        int pX;
-                        file>>pX;
+                    // GMapWorld
 
-                        rGMap->playerX = pX;
+                    else if(command == "gMapWorld")
+                    {
+                        // Clear
+                        GMapWorld rGMapWorld = GMapWorld();
+
+                        do
+                        {
+                            file>>command;
+
+                            // Biome name
+                            if(command == "biome")
+                            {
+                                string biomeName;
+                                file>>biomeName;
+
+                                rGMapWorld.setBiome(biome[biomeName]);
+                            }
+
+                            // Game Home
+
+                            if(command == "gHome")
+                            {
+                                // Clear
+                                GMapHome *rGMapHome = new GMapHome();
+                                int rGMapHomeX;
+                                bool rGMapHomeXB = false;
+                                int rGMapHomeY;
+                                bool rGMapHomeYB = false;
+
+                                // Read
+                                do
+                                {
+                                    file>>command;
+
+                                    // Biome
+                                    if(command == "biome")
+                                    {
+                                        string biomeName;
+                                        file>>biomeName;
+
+                                        rGMapHome->setBiome(biome[biomeName]);
+                                    }
+
+                                    // X
+                                    else if(command == "x")
+                                    {
+                                        file>>rGMapHomeX;
+                                        rGMapHomeXB = true;
+                                    }
+
+                                    // Y
+                                    else if(command == "y")
+                                    {
+                                        file>>rGMapHomeY;
+                                        rGMapHomeYB = true;
+                                    }
+
+                                    // Wall type
+                                    else if(command == "wallType")
+                                    {
+                                        chtype wallType_;
+                                        file>>wallType_;
+                                        rGMapHome->setWallType(GMapSlot(' ', wallType_));
+                                    }
+
+                                    // Slot
+
+                                    else if(command == "gMapSlot")
+                                    {
+                                        // Clear
+                                        GMapSlot *rGMapSlot = new GMapSlot();
+                                        int rGMapSlotX;
+                                        bool rGMapSlotXB = false;
+                                        int rGMapSlotY;
+                                        bool rGMapSlotYB = false;
+
+                                        // Read
+                                        do
+                                        {
+                                            file>>command;
+
+                                            // X
+                                            if(command == "x")
+                                            {
+                                                file>>rGMapSlotX;
+                                                rGMapSlotXB = true;
+                                            }
+
+                                            // Y
+                                            else if(command == "Y")
+                                            {
+                                                file>>rGMapSlotY;
+                                                rGMapSlotYB = true;
+                                            }
+
+                                            // Static type
+                                            else if(command == "sType")
+                                            {
+                                                chtype staticType_;
+                                                file>>staticType_;
+                                                rGMapSlot->setStaticType(staticType_);
+                                            }
+
+                                            // Dynamic type
+                                            else if(command == "dType")
+                                            {
+                                                chtype dynamicType_;
+                                                file>>dynamicType_;
+                                                rGMapSlot->setDynamicType(dynamicType_);
+                                            }
+
+                                        } while(command != "/gMapSlot");
+
+                                        // X and Y initialized?
+                                        assert(rGMapSlotXB && rGMapSlotYB && ("X or Y in gMapSlot uninitialized" || true));
+
+                                        // Set
+                                        rGMapHome->setSlot(rGMapSlotX, rGMapSlotY, rGMapSlot);
+                                    }
+
+                                } while(command != "/gHome");
+
+                                // X and Y initialized?
+                                assert(rGMapHomeXB && rGMapHomeYB && ("X or Y in GMapHome uninitialized" || true));
+
+                                // Set
+                                rGMapWorld.setGMapHomeY(rGMapHomeX, rGMapHomeY, rGMapHome);
+                            }
+
+                            // Player
+
+                            else if(command == "player")
+                            {
+                                // Clear
+                                bool rGMapWorldPlayerXB = false;
+                                bool rGMapWorldPlayerYB = false;
+
+                                // Read
+                                do
+                                {
+                                    file>>command;
+
+                                    // X
+                                    if(command == "x")
+                                    {
+                                        int x_;
+                                        file>>x_;
+                                        rGMapWorld.setPlayerX(x_);
+                                        rGMapWorldPlayerXB = true;
+                                    }
+
+                                    // Y
+                                    else if(command == "y")
+                                    {
+                                        int y_;
+                                        file>>y_;
+                                        rGMapWorld.setPlayerY(y_);
+                                        rGMapWorldPlayerYB = true;
+                                    }
+
+                                } while(command != "/player");
+
+                                // X and Y initialized?
+                                assert(rGMapWorldPlayerXB && rGMapWorldPlayerYB && ("X or Y in GMapWorld in player uninitialized" || true));
+                            }
+
+                            // Slot
+
+                            else if(command == "gMapSlot")
+                            {
+                                // Clear
+                                GMapSlot *rGMapSlot = new GMapSlot();
+                                int rGMapSlotX;
+                                bool rGMapSlotXB = false;
+                                int rGMapSlotY;
+                                bool rGMapSlotYB = false;
+
+                                // Read
+                                do
+                                {
+                                    file>>command;
+
+                                    // X
+                                    if(command == "x")
+                                    {
+                                        file>>rGMapSlotX;
+                                        rGMapSlotXB = true;
+                                    }
+
+                                    // Y
+                                    else if(command == "y")
+                                    {
+                                        file>>rGMapSlotY;
+                                        rGMapSlotYB = true;
+                                    }
+
+                                    // Static type
+                                    else if(command == "sType")
+                                    {
+                                        chtype staticType_;
+                                        file>>staticType_;
+                                        rGMapSlot->setStaticType(staticType_);
+                                    }
+
+                                    // Dynamic type
+                                    else if(command == "dType")
+                                    {
+                                        chtype dynamicType_;
+                                        file>>dynamicType_;
+                                        rGMapSlot->setDynamicType(dynamicType_);
+                                    }
+
+                                } while(command != "/gMapSlot");
+
+                                // X and Y initialized?
+                                assert(rGMapSlotXB && rGMapSlotYB && ("X or Y uninitialized" || true));
+
+                                // Set
+                                rGMapWorld.setSlot(rGMapSlotX, rGMapSlotY, rGMapSlot);
+                            }
+
+                        } while(command != "/gMapWorld");
+
+                        // Set
+                        rSaveSlot->gMap = rGMapWorld;
                     }
 
-                    // Y
-                    else if(command == "y")
-                    {
-                        int pY;
-                        file>>pY;
+                } while(command != "/saveSlot");
 
-                        rGMap->playerY = pY;
-                    }
-                }
+                // Set
 
-                // Slot
+                // SaveSlot
+                saveSlot[rSaveSlotNum] = rSaveSlot;
 
-                if(command == "slot")
-                {
-                    rSlotB = true;
-                    rSlot = new GMapSlot();
-                }
+                // Rename Button
 
-                else if(command == "/slot")
-                {
-                    rSlotB = false;
-                    rGMap->slot[rSlotX][rSlotY] = rSlot;
-                }
+                // New Button
+                Button* newButton = scene["saves"]->getButton()[rSaveSlotNum];
 
-                // Slot commands
+                // Edit
+                newButton->setName(rSaveSlot->playerName);
 
-                if(rSlotB)
-                {
-                    // X
-                    if(command == "x")
-                    {
-                        int sX;
-                        file>>sX;
-
-                        rSlotX = sX;
-                    }
-
-                    // Y
-                    else if(command == "y")
-                    {
-                        int sY;
-                        file>>sY;
-
-                        rSlotY = sY;
-                    }
-
-                    // Static type
-                    else if(command == "sType")
-                    {
-                        chtype sSType;
-                        file>>sSType;
-
-                        rSlot->staticType = sSType;
-                    }
-
-                    // Dynamic type
-                    else if(command == "dType")
-                    {
-                        chtype sDType;
-                        file>>sDType;
-
-                        rSlot->dynamicType = sDType;
-                    }
-                }
+                // Set
+                scene["saves"]->setButton(rSaveSlotNum, newButton);
             }
         }
     }
@@ -837,8 +1040,8 @@ void initAll()
     initBiomes();
 
     // GMaps
-    for(int mGMap = 0; mGMap < 4; mGMap++)
+    for(auto &mSave: saveSlot)
     {
-        gMap[mGMap] = new GMap(biome["forest"]);
+        mSave = new SaveSlot(new GMapWorld(biome["forest"], new GMapHome(biome["home"])));
     }
 }

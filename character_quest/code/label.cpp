@@ -1,55 +1,56 @@
 #include "label.h"
 
-Label::Label(string lText, int lX, int lY, int lW, int lH, const Font *lFont, bool lAnimation, float lAnimationSpeedMSecs, int lIndent, bool lAlign)
+Label::Label(string lText, int x_, int y_, int width_, int height_, const Font *font_, bool animation_, float animationSpeed_, int indent_, bool align_)
 {
     // Coords
-    x = lX;
-    y = lY;
+    setX(x_);
+    setY(y_);
 
     // Width / Height
-    width = lW;
-    height = lH;
+    setWidth(width_);
+    setHeight(height_);
 
     // Texts
-    text = lText;
+    setText(lText);
 
     // Indent
-    indent = lIndent;
+    setIndent(indent_);
 
     // Animation
-    animation = lAnimation;
+    setAnimation(animation_);
 
     // Invisible
-    animationValue = 0.0f;
+    setAnimatonValue(0.0f);
 
-    if(lAnimation)
+    if(animation_)
     {
         // Speed
-        animationSpeed = lAnimationSpeedMSecs;
+        setAnimationSpeed(animationSpeed_);
     }
     else
     {
         // Speed
-        animationSpeed = 0.0f;
+        setAnimationSpeed(0.0f);
     }
 
     // Align
-    align = lAlign;
+    setAlign(align_);
 
     // Font Id
-    font = (Font*)lFont;
+    setFont( (Font*)font_);
 
     // Timer
-    animationTimer = new Timer(lAnimationSpeedMSecs);
+    setAnimationTimer(new Timer(animationSpeed_));
 }
 
 string Label::animationText()
 {
     // Animation text
+
     if(animation)
     {
         string aText;
-        for(size_t mChar = 0; mChar < text.size() && mChar < animationValue; mChar++)
+        for(size_t mChar = 0; mChar < text.size() && mChar < getAnimationValue(); mChar++)
         {
             aText.push_back(text[mChar]);
         }
@@ -60,25 +61,38 @@ string Label::animationText()
 
 bool Label::animationFinished()
 {
-    if(animationValue > text.size())
+    // Animaton finished
+
+    if(getAnimationValue() > text.size())
     {
         return true;
     }
     return false;
 }
 
+bool Label::animationStarted()
+{
+    // Animation started
+
+    return getAnimationValue() > 0.0f;
+}
+
 void Label::animationTact()
 {
-    if(animation)
+    // Animation tact
+
+    if(getAnimation())
     {
-        if(animationStarted)
+        if(animationStarted())
         {
-            if(animationTimer->finished())
+            if(getAnimationTimer()->finished())
             {
+                // Tact
                 animationValue += animationSpeed;
 
                 if(!animationFinished())
                 {
+                    // Restart
                     animationTimer->restart();
                 }
             }
@@ -88,34 +102,39 @@ void Label::animationTact()
 
 void Label::animationStart()
 {
-    if(animation)
+    // Animation start
+
+    if(getAnimation())
     {
         // Stop
         animationStop();
 
-        // Start
-        animationStarted = true;
+        setAnimatonValue(getAnimationValue() + getAnimationSpeed());
     }
 }
 
 void Label::animationStop()
 {
+    // Animation stop
+
     if(animation)
     {
-        animationValue = 0;
+        setAnimatonValue(0);
     }
 }
 
 void Label::animationOn()
 {
     // On animation
-    animation = true;
+
+    setAnimation(true);
 }
 
 void Label::animationOff()
 {
     // Off animation
-    animation = false;
+
+    setAnimation(false);
 }
 
 bool Label::draw(int scrW, int scrH)
@@ -160,3 +179,164 @@ bool Label::draw(int scrW, int scrH)
     return true;
 }
 
+// --------------------------- Values ---------------------------
+
+// Coords
+
+// X
+
+int Label::getX()
+{
+    // Get
+    return x;
+}
+void Label::setX(int x_)
+{
+    // Set
+    x = x_;
+}
+
+// Y
+
+int Label::getY()
+{
+    // Get
+    return y;
+}
+void Label::setY(int y_)
+{
+    // Set
+    y = y_;
+}
+
+// Size
+
+// Width
+
+int Label::getWidth()
+{
+    // Get
+    return width;
+}
+void Label::setWidth(int width_)
+{
+    // Set
+    width = width_;
+}
+
+// Height
+
+int Label::getHeight()
+{
+    // Get
+    return height;
+}
+void Label::setHeight(int height_)
+{
+    // Set
+    height = height_;
+}
+
+// Text
+
+string Label::getText()
+{
+    // Get
+    return text;
+}
+void Label::setText(string text_)
+{
+    // Set
+    text = text_;
+}
+
+// Font
+
+Font *Label::getFont()
+{
+    // Get
+    return font;
+}
+void Label::setFont(Font *font_)
+{
+    // Set
+    font = font_;
+}
+
+// Indent
+
+int Label::getIndent()
+{
+    // Get
+    return indent;
+}
+void Label::setIndent(int indent_)
+{
+    // Set
+    indent = indent_;
+}
+
+// Align
+
+bool Label::getAlign()
+{
+    // Get
+    return align;
+}
+void Label::setAlign(bool align_)
+{
+    // Set
+    align = align_;
+}
+
+// Timer
+
+Timer *Label::getAnimationTimer()
+{
+    // Get
+    return animationTimer;
+}
+void Label::setAnimationTimer(Timer *animationTimer_)
+{
+    // Set
+    animationTimer = animationTimer_;
+}
+
+// Value
+
+float Label::getAnimationValue()
+{
+    // Get
+    return animationValue;
+}
+void Label::setAnimatonValue(float animationValue_)
+{
+    // Set
+    animationValue = animationValue_;
+}
+
+// Speed
+
+float Label::getAnimationSpeed()
+{
+    // Get
+    return animationSpeed;
+}
+void Label::setAnimationSpeed(float animationSpeed_)
+{
+    // Set
+    animationSpeed = animationSpeed_;
+}
+
+// Animation
+
+bool Label::getAnimation()
+{
+    // Get
+    return animation;
+}
+void Label::setAnimation(bool animation_)
+{
+    // Set
+    animation = animation_;
+}

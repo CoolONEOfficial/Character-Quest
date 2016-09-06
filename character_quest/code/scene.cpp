@@ -52,7 +52,7 @@ void Scene::addButton(Button *aButton)
 
     // Map
     size_t buttonsSize = button.size();
-    buttonId[aButton->name] = buttonsSize;
+    buttonId[aButton->getName()] = buttonsSize;
 
     // Button
     button.push_back(aButton);
@@ -64,8 +64,8 @@ void Scene::alignButtonsX(int bY)
 
     for(size_t mButton = 0; mButton < button.size(); mButton++)
     {
-        button[mButton]->x = scrDWidth / (button.size()+1) * (mButton+1);
-        button[mButton]->y = bY;
+        button[mButton]->setX(scrDWidth / (button.size()+1) * (mButton+1));
+        button[mButton]->setY(bY);
     }
 }
 
@@ -75,8 +75,8 @@ void Scene::alignButtonsY(int bX)
 
     for(size_t mButton = 0; mButton < button.size(); mButton++)
     {
-        button[mButton]->x = bX;
-        button[mButton]->y = scrDHeight / (button.size()+1) * (mButton+1);
+        button[mButton]->setX(bX);
+        button[mButton]->setY(scrDHeight / (button.size()+1) * (mButton+1));
     }
 }
 
@@ -89,11 +89,11 @@ void Scene::drawButtons(int dSelectedButton, int scrW, int scrH)
         // Deselect all
         for(size_t mButton = 0; mButton < button.size(); mButton++)
         {
-            button[mButton]->select = false;
+            button[mButton]->setSelected(false);
         }
 
         // Select selected
-        button[dSelectedButton]->select = true;
+        button[dSelectedButton]->setSelected(true);
 
         // Draw
         for(size_t mButton = 0; mButton < button.size(); mButton++)
@@ -119,10 +119,67 @@ void Scene::drawLabels(int scrW, int scrH)
         for(size_t mLabel = 0; mLabel < label.size()-1; mLabel++)
         {
             if(label[mLabel]->animationFinished() &&
-               !label[mLabel+1]->animationStarted)
+               !label[mLabel+1]->animationStarted())
             {
                 label[mLabel+1]->animationStart();
             }
         }
     }
 }
+
+// --------------------------- Values ---------------------------
+
+// Buttons
+
+vector<Button *> Scene::getButton()
+{
+    // Get
+    return button;
+}
+void Scene::setButtonVector(vector<Button *> button_)
+{
+    // Set vector
+    button = button_;
+}
+void Scene::setButton(int key_, Button *value_)
+{
+    // Set
+    button[key_] = value_;
+}
+
+// Id's
+
+map<string, int> Scene::getButtonId()
+{
+    // Get
+    return buttonId;
+}
+void Scene::setButtonIdMap(map<string, int> buttonId_)
+{
+    // Set map
+    buttonId = buttonId_;
+}
+void Scene::setButtonId(string key_, int value_)
+{
+    // Set
+    buttonId[key_] = value_;
+}
+
+// Label
+
+vector<Label *> Scene::getLabel()
+{
+    // Get
+    return label;
+}
+void Scene::setLabelVector(vector<Label *> label_)
+{
+    // Set vector
+    label = label_;
+}
+void Scene::setLabel(int key_, Label *value_)
+{
+    // Set
+    label[key_] = value_;
+}
+

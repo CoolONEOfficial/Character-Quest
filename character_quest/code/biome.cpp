@@ -1,35 +1,20 @@
 #include "biome.h"
 
-Biome::Biome(float bDynamiclLuck, map<string, BObjCat *> bCatStatic, map<string, BObjCat *> bCatDynamic)
+Biome::Biome(float dynamiclLuck_, map<string, BObjCat *> catStatic_, map<string, BObjCat *> catDynamic_)
 {
     // Categories
-    catStatic = bCatStatic;
-    catDynamic = bCatDynamic;
+    setCatStaticMap(catStatic_);
+    setCatDynamicMap(catDynamic_);
 
     // Luck find dynamic object
-    dynamicLuck = bDynamiclLuck;
+    setDynamicLuck(dynamiclLuck_);
 }
 
-float Biome::catsLuck(map<string, BObjCat *> &mapCats)
-{
-    // Categories luck
-
-    assert(!mapCats.empty() || ( "Categories map is empty" && false ));
-
-    float cLuck = 0.0f;
-    for(auto mCat: mapCats)
-    {
-        cLuck += mCat.second->luck;
-    }
-
-    return cLuck;
-}
-
-BObjCat *Biome::genCat(map<string, BObjCat *> &mapCats)
+BObjCat *Biome::genCat(map<string, BObjCat *> mapCats)
 {
     // Generate category
 
-    assert(!mapCats.empty() || ( "Categories map is empty" && false ));
+    assert(!mapCats.empty() && ( "Categories map is empty" || true ));
 
     float random = randf(catsLuck(mapCats));
 
@@ -37,19 +22,34 @@ BObjCat *Biome::genCat(map<string, BObjCat *> &mapCats)
     for(auto &mCat: mapCats)
     {
         if(random > mCatLuck &&
-                random < mCatLuck + mCat.second->luck)
+                random < mCatLuck + mCat.second->getLuck())
         {
             return mCat.second;
         }
         else
         {
-            mCatLuck += mCat.second->luck;
+            mCatLuck += mCat.second->getLuck();
         }
     }
 
-    assert(true || ("For skipped?!?" && false));
+    assert("For skipped?!?" && false);
 
-    exit(0);
+    exit(EXIT_FAILURE);
+}
+
+float Biome::catsLuck(map<string, BObjCat *> mapCats)
+{
+    // Categories luck
+
+    assert(!mapCats.empty() && ( "Categories map is empty" || true ));
+
+    float cLuck = 0.0f;
+    for(auto mCat: mapCats)
+    {
+        cLuck += mCat.second->getLuck();
+    }
+
+    return cLuck;
 }
 
 BObjCat *Biome::genCatStatic()
@@ -64,4 +64,60 @@ BObjCat *Biome::genCatDynamic()
     // Generate category dynamic
 
     return genCat(catDynamic);
+}
+
+bool Biome::is_empty()
+{
+    // Empty
+
+    return catDynamic.empty() && catStatic.empty();
+}
+
+// Category Static
+
+map<string, BObjCat *> Biome::getCatStatic()
+{
+    // Get
+    return catStatic;
+}
+void Biome::setCatStaticMap(map<string, BObjCat *> catStatic_)
+{
+    // Set map
+    catStatic = catStatic_;
+}
+void Biome::setCatStatic(string key_, BObjCat *value_)
+{
+    // Set Object Category
+    catStatic[key_] = value_;
+}
+
+// Category Dynamic
+
+map<string, BObjCat *> Biome::getCatDynamic()
+{
+    // Get
+    return catDynamic;
+}
+void Biome::setCatDynamicMap(map<string, BObjCat *> catDynamic_)
+{
+    // Set map
+    catDynamic = catDynamic_;
+}
+void Biome::setCatDynamic(string key_, BObjCat *value_)
+{
+    // Set object category
+    catDynamic[key_] = value_;
+}
+
+// Dynamic luck
+
+float Biome::getDynamicLuck()
+{
+    // Get
+    return dynamicLuck;
+}
+void Biome::setDynamicLuck(float dynamicLuck_)
+{
+    // Set
+    dynamicLuck = dynamicLuck_;
 }

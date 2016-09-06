@@ -14,26 +14,86 @@ using namespace std;
 class Character
 {
 public:
-    Character(char cNaturalImage = '.',
-              int cSmallWidth = 4, int cSmallHeight = 5, vector<string> cSmallImage = {""},
-              int cNormalWidth = 6, int cNormalHeight = 8, vector<string> cNormalImage = {""},
-              int cBigWidth = 8, int cBigHeight = 10, vector<string> cBigImage = {""});
+    Character(char imageNatural_ = '.',
+              int widthSmall_ = 4, int heightSmall_ = 5, vector<string> imageSmall_ = {""},
+              int widthNormal_ = 6, int heightNormal_ = 8, vector<string> imageNormal_ = {""},
+              int widthBig_ = 8, int heightBig_ = 10, vector<string> imageBig_ = {""});
 
-    // Widths / Heights
-    int widthSmall, heightSmall;
-    int widthNormal, heightNormal;
-    int widthBig, heightBig;
+    // Draw
+    void draw(int dX, int dY, string size);
 
+    // Size
     int width(string cSize);
     int height(string cSize);
 
-    // Images
-    vector< string > imageSmall;
-    vector< string > imageNormal;
-    vector< string > imageBig;
+    // --------------------------- Values ---------------------------
+
+    // -------------------------- Images --------------------------
+
+    // Small
+    vector<string> getImageSmall();
+    void setImageSmall(vector<string> imageSmall_);
+
+    // Normal
+    vector<string> getImageNormal();
+    void setImageNormal(vector<string> imageNormal_);
+
+    // Big
+    vector<string> getImageBig();
+    void setImageBig(vector<string> imageBig_);
+
+    // Natural
+    char getImageNatural();
+    void setImageNatural(char imageNatural_);
+
+    // -------------------------- Sizes --------------------------
+
+    // Small
+    int getWidthSmall();
+    void setWidthSmall(int widthSmall_);
+    int getHeightSmall();
+    void setHeightSmall(int heightSmall_);
+
+    // Normal
+    int getWidthNormal();
+    void setWidthNormal(int widthNormal_);
+    int getHeightNormal();
+    void setHeightNormal(int heightNormal_);
+
+    // Big
+    int getWidthBig();
+    void setWidthBig(int widthBig_);
+    int getHeightBig();
+    void setHeightBig(int heightBig_);
+
+private:
+    // -------------------------- Images --------------------------
+
+    // Small
+    vector<string> imageSmall;
+
+    // Normal
+    vector<string> imageNormal;
+
+    // Big
+    vector<string> imageBig;
+
+    // Natural
     char imageNatural;
 
-    void draw(int dX, int dY, string size);
+    // -------------------------- Sizes --------------------------
+
+    // Small
+    int widthSmall;
+    int heightSmall;
+
+    // Normal
+    int widthNormal;
+    int heightNormal;
+
+    // Big
+    int widthBig;
+    int heightBig;
 };
 
 #endif // _FILE_CHARACTER_

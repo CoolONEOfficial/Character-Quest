@@ -1,26 +1,20 @@
 #include "gmap.h"
 
-GMap::GMap(Biome *gBiome, string gPlayerName)
+GMap::GMap(Biome *biome_)
 {
     // Player
 
-    // Name
-    playerName = gPlayerName;
-
     // Coords
-    playerX = 100;
-    playerY = 100;
+    setPlayerX(0);
+    setPlayerY(0);
 
     // Map
 
     // Biome
-    biome = gBiome;
+    setBiome(biome_);
 
     // Saved
-    saved = false;
-
-    // Slot
-    slot = {};
+    setSaved(true);
 }
 
 GMap::~GMap()
@@ -35,7 +29,7 @@ GMap::~GMap()
 // Camera coords
 
 int GMap::cameraX(int viewW)
-{    
+{
     return playerX - viewW/2;
 }
 
@@ -62,41 +56,46 @@ int GMap::toMapX(int sX, int viewW, int indentX)
     return sX - indentX + cameraX(viewW);
 }
 int GMap::toMapY(int sY, int viewH, int indentY)
-{    
+{
     return sY - indentY + cameraY(viewH);
 }
 
-bool GMap::empty()
+bool GMap::is_empty()
 {
     // Empty
 
-    return playerName == "Empty";
+    return slot.empty();
 }
 
-GMapSlot *GMap::genSlot()
+GMapSlot *GMap::generateSlot()
 {
     // Generate slot
 
     GMapSlot *gSlot = new GMapSlot();
 
     // Set dynamic
-    if(luck(biome->dynamicLuck))
+    if(luck(biome->getDynamicLuck()))
     {
-        gSlot->dynamicType = biome->genCatDynamic()->genObj()->type;
+        gSlot->setDynamicType(biome->genCatDynamic()->genObject()->getType());
     }
 
     // Set static
-    gSlot->staticType = biome->genCatStatic()->genObj()->type;
+    gSlot->setStaticType(biome->genCatStatic()->genObject()->getType());
 
     return gSlot;
 }
 
-void GMap::draw(int dX, int dY, int dW, int dH)
+void GMap::draw(int dX, int dY, int dW, int dH, bool gen)
 {
     // Draw
 
-    // Map
+    // Generate
+    if(gen)
+        generate(dW, dH);
 
+    // Draw
+
+    // Map
     for(int mX = 0; mX < alignW(dW); mX++)
     {
         // X
@@ -107,22 +106,15 @@ void GMap::draw(int dX, int dY, int dW, int dH)
             // Y
             int y = cameraY(alignH(dH)) + mY;
 
-            // Generate
-            if( slot.find(x) == slot.end() ||
-                    slot[x].find(y) == slot[x].end() )
-            {
-                slot[x][y] = genSlot();
-            }
-
             // Draw
             move(alignH(dY) + mY, alignW(dX) + mX);
-            if(slot[x][y]->dynamicType == ' ')
+            if(slot[x][y]->getDynamicType() == ' ')
             {
-                addch(slot[x][y]->staticType);
+                addch(slot[x][y]->getStaticType());
             }
             else
             {
-                addch(slot[x][y]->dynamicType);
+                addch(slot[x][y]->getDynamicType());
             }
         }
     }
@@ -133,66 +125,151 @@ void GMap::draw(int dX, int dY, int dW, int dH)
     printw("T");
 }
 
-bool GMap::movePlayer(string dir)
+void GMap::generate(int dW, int dH)
+{
+    // Generate slots
+
+    for(int mX = 0; mX < alignW(dW); mX++)
+    {
+        // X
+        int gX = cameraX(alignW(dW)) + mX;
+
+        for(int mY = 0; mY < alignH(dH); mY++)
+        {
+            // Y
+            int gY = cameraY(alignH(dH)) + mY;
+
+            // Generate
+            if( slot.find(gX) == slot.end() ||
+                    slot[gX].find(gY) == slot[gX].end() )
+            {
+                slot[gX][gY] = generateSlot();
+            }
+        }
+    }
+}
+
+GMapSlot *GMap::movePlayer(int mX, int mY)
 {
     // Move player
 
-    // Up
-    if(dir == "up")
+    GMapSlot *gotoSlot = slot[playerX + mX][playerY + mY];
+
+    if(gotoSlot->is_free())
     {
-        if(slot[playerX][playerY-1]->free())
-        {
-            // Move Y
-            playerY--;
+        // Move
+        playerX += mX;
+        playerY += mY;
 
-            saved = false;
-
-            return true;
-        }
+        saved = false;
     }
 
-    // Down
-    else if(dir == "down")
-    {
-        if(slot[playerX][playerY+1]->free())
-        {
-            // Move Y
-            playerY++;
-
-            saved = false;
-
-            return true;
-        }
-    }
-
-    // Left
-    else if(dir == "left")
-    {
-        if(slot[playerX-1][playerY]->free())
-        {
-            // Move X
-            playerX--;
-
-            saved = false;
-
-            return true;
-        }
-    }
-
-    // Right
-    else if(dir == "right")
-    {
-        if(slot[playerX+1][playerY]->free())
-        {
-            // Move X
-            playerX++;
-
-            saved = false;
-
-            return true;
-        }
-    }
-
-    return false;
+    return gotoSlot;
 }
 
+GMapSlot *GMap::movePlayerUp()
+{
+    // Move Player Up
+
+    return movePlayer(0, -1);
+}
+
+GMapSlot *GMap::movePlayerDown()
+{
+    // Move player down
+
+    return movePlayer(0, 1);
+}
+
+GMapSlot *GMap::movePlayerLeft()
+{
+    // Move player left
+
+    return movePlayer(-1, 0);
+}
+
+GMapSlot *GMap::movePlayerRight()
+{
+    // Move player right
+
+    return movePlayer(1, 0);
+}
+
+// --------------------------- Values ---------------------------
+
+// Slot
+
+map<int, map<int, GMapSlot *> > GMap::getSlot()
+{
+    // Get
+    return slot;
+}
+void GMap::setSlotX(map<int, map<int, GMapSlot *> > slot_)
+{
+    // Set Map X
+    slot = slot_;
+}
+void GMap::setSlotY(int x_, map<int, GMapSlot *> slot_)
+{
+    // Set Map Y
+    slot[x_] = slot_;
+}
+void GMap::setSlot(int x_, int y_, GMapSlot *slot_)
+{
+    // Set Slot
+    slot[x_][y_] = slot_;
+}
+
+// Player
+
+// X
+
+int GMap::getPlayerX()
+{
+    // Get
+    return playerX;
+}
+void GMap::setPlayerX(int playerX_)
+{
+    // Set
+    playerX = playerX_;
+}
+
+// Y
+
+int GMap::getPlayerY()
+{
+    // Get
+    return playerY;
+}
+void GMap::setPlayerY(int playerY_)
+{
+    // Set
+    playerY = playerY_;
+}
+
+// Biome
+
+Biome *GMap::getBiome()
+{
+    // Get
+    return biome;
+}
+void GMap::setBiome(Biome *biome_)
+{
+    // Set
+    biome = biome_;
+}
+
+// Saved
+
+bool GMap::getSaved()
+{
+    // Get
+    return saved;
+}
+void GMap::setSaved(bool saved_)
+{
+    // Set
+    saved = saved_;
+}

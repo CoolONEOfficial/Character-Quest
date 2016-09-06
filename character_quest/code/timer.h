@@ -12,7 +12,7 @@ clock_t timer(int mSecs);
 class Timer
 {
 public:
-    Timer(int tMSecs);
+    Timer(int tMSecs = 2000);
 
     bool started();
     bool finished();

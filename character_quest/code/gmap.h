@@ -17,18 +17,15 @@ using namespace std;
 class GMap
 {
 public:
-    GMap(Biome *gBiome = new Biome(), string gPlayerName = "Empty");
+    GMap(Biome* biome_ = new Biome());
     ~GMap();
 
-    // Slots
-    map < int, map< int, GMapSlot*> > slot;
+    // Draw
+    virtual void draw(int dX, int dY, int dW, int dH, bool gen = true);
 
-    // Camera coords
-    int cameraX(int viewW);
-    int cameraY(int viewH);
-
-    // Saved
-    bool saved;
+    // Generate
+    virtual void generate(int dW, int dH);
+    GMapSlot* generateSlot();
 
     // From map to screen coords
     int toScrX(int mX, int viewW, int indentX);
@@ -38,30 +35,63 @@ public:
     int toMapX(int sX, int viewW, int indentX);
     int toMapY(int sY, int viewH, int indentY);
 
-    // Draw
-    void draw(int dX, int dY, int dW, int dH);
-
-    // Biome
-    Biome *biome;
-
-    // Generate Slot
-    GMapSlot *genSlot();
-
-    // Empty
-    bool empty();
-
-    // --------------------------- Player ---------------------------
-
-    // Player Name
-    string playerName;
-
-    // Player coords
-    int playerX;
-    int playerY;
+    // Camera coords
+    int cameraX(int viewW);
+    int cameraY(int viewH);
 
     // Move player
-    bool movePlayer(string dir);
+    virtual GMapSlot* movePlayer(int mX, int mY);
+    GMapSlot* movePlayerUp();
+    GMapSlot* movePlayerDown();
+    GMapSlot* movePlayerLeft();
+    GMapSlot* movePlayerRight();
 
+    // Empty
+    bool is_empty();
+
+    // --------------------------- Values ---------------------------
+
+    // Slots
+    map < int, map< int, GMapSlot*> > getSlot();
+    void setSlotX(map < int, map< int, GMapSlot*> > slot_);
+    void setSlotY(int x_, map< int, GMapSlot*> slot_);
+    void setSlot(int x_, int y_, GMapSlot* slot_);
+
+    // Player coords
+
+    // X
+    int getPlayerX();
+    void setPlayerX(int playerX_);
+
+    // Y
+    int getPlayerY();
+    void setPlayerY(int playerY_);
+
+    // Biome
+    Biome *getBiome();
+    void setBiome(Biome* biome_);
+
+    // Saved
+    bool getSaved();
+    void setSaved(bool saved_);
+
+private:
+    // Slots
+    map < int, map< int, GMapSlot*> > slot;
+
+    // Player coords
+
+    // X
+    int playerX;
+
+    // Y
+    int playerY;
+
+    // Biome
+    Biome* biome;
+
+    // Saved
+    bool saved;
 };
 
 #endif // _FILE_GMAP_

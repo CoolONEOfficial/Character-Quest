@@ -1,22 +1,51 @@
 #include "gmapslot.h"
 
-GMapSlot::GMapSlot(chtype wSType, chtype wDType)
+GMapSlot::GMapSlot(chtype staticType_, chtype dynamicType_)
 {
     // Static type
-    staticType = wSType;
+    setStaticType(staticType_);
 
     // Dynamic type
-    dynamicType = wDType;
+    setDynamicType(dynamicType_);
 }
 
-bool GMapSlot::empty()
+bool GMapSlot::is_empty()
 {
-    return dynamicType == ' ' &&
-            staticType == ' ';
+    return getDynamicType() == ' ' &&
+            getDynamicType() == ' ';
 }
 
-bool GMapSlot::free()
+bool GMapSlot::is_free()
 {
-    return dynamicType == ' ';
+    return getDynamicType() == ' ';
 }
 
+// --------------------------- Values ---------------------------
+
+// Types
+
+// Static
+
+chtype GMapSlot::getStaticType()
+{
+    // Get
+    return staticType;
+}
+void GMapSlot::setStaticType(chtype staticType_)
+{
+    // Set
+    staticType = staticType_;
+}
+
+// Dynamic
+
+chtype GMapSlot::getDynamicType()
+{
+    // Get
+    return dynamicType;
+}
+void GMapSlot::setDynamicType(chtype dynamicType_)
+{
+    // Set
+    dynamicType = dynamicType_;
+}

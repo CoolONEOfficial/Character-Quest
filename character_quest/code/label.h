@@ -8,7 +8,6 @@
 #include "character.h"
 
 #include <ncursesall.h>
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -18,17 +17,100 @@ using namespace std;
 class Label
 {
 public:
-    Label(string lText, int lX, int lY, int lW, int lH, const Font *lFont,
-          bool lAnimation = true, float lAnimationSpeedMSecs = 0.01f, int lIndent = 2, bool lAlign = true);
+    Label(string lText, int x_, int y_, int width_, int height_, const Font *font_,
+          bool animation_ = true, float animationSpeed_ = 0.01f, int indent_ = 2, bool align_ = true);
+
+    // Draw
+    bool draw(int scrW, int scrH);
+
+    // --------------------------- Animation ---------------------------
+
+    // Text
+    string animationText();
+
+    // Started / Finished bool
+    bool animationFinished();
+    bool animationStarted();
+
+    // Tact
+    void animationTact();
+
+    // Control
+    void animationStart();
+    void animationStop();
+    void animationOn();
+    void animationOff();
+
+    // --------------------------- Values ---------------------------
 
     // Coords
-    int x, y;
+
+    // X
+    int getX();
+    void setX(int x_);
+
+    // Y
+    int getY();
+    void setY(int y_);
+
+    // Size
+
+    // Width
+    int getWidth();
+    void setWidth(int width_);
+
+    // Height
+    int getHeight();
+    void setHeight(int height_);
+
+    // Text
+    string getText();
+    void setText(string text_);
+
+    // Font
+    Font* getFont();
+    void setFont(Font* font_);
+
+    // Indent
+    int getIndent();
+    void setIndent(int indent_);
+
+    // Align
+    bool getAlign();
+    void setAlign(bool align_);
+
+    // --------------------------- Animation values ---------------------------
+
+    // Timer
+    Timer* getAnimationTimer();
+    void setAnimationTimer(Timer* animationTimer_);
+
+    // View size
+    float getAnimationValue();
+    void setAnimatonValue(float animationValue_);
+
+    // Speed
+    float getAnimationSpeed();
+    void setAnimationSpeed(float animationSpeed_);
+
+    // Bool
+    bool getAnimation();
+    void setAnimation(bool animation_);
+
+private:
+    // Coords
+    int x;
+    int y;
 
     // Width / Height
-    int width, height;
+    int width;
+    int height;
 
     // Text
     string text;
+
+    // Font
+    Font* font;
 
     // Indent
     int indent;
@@ -36,39 +118,19 @@ public:
     // Align
     bool align;
 
-    // Font
-    Font *font;
+    // --------------------------- Animation values ---------------------------
 
-    // Draw
-    bool draw(int scrW, int scrH);
-
-    // --------------------------- Animation ---------------------------
-
-    string animationText();
+    // Timer
+    Timer* animationTimer;
 
     // View size
     float animationValue;
 
-    // Bool
-    bool animation;
-
-    // Started / Finished Bools
-    bool animationStarted;
-    bool animationFinished();
-
-    Timer *animationTimer;
-
-    // Tact
-    void animationTact();
-
     // Speed
     float animationSpeed;
 
-    // Control
-    void animationStart();
-    void animationStop();
-    void animationOn();
-    void animationOff();
+    // Bool
+    bool animation;
 };
 
 #endif // _FILE_LABEL_

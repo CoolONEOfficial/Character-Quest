@@ -1,10 +1,38 @@
 #include "bobj.h"
 
-BObj::BObj(float oLuck, chtype oType)
+BObj::BObj(float luck_, chtype type_)
 {
     // Type
-    type = oType;
+    setType(type_);
 
     // Luck
-    luck = oLuck;
+    setLuck(luck_);
+}
+
+// --------------------------- Values ---------------------------
+
+// Type
+
+chtype BObj::getType()
+{
+    // Get
+    return type;
+}
+void BObj::setType(chtype type_)
+{
+    // Set
+    type = type_;
+}
+
+// Luck
+
+float BObj::getLuck()
+{
+    // Get
+    return luck;
+}
+void BObj::setLuck(float luck_)
+{
+    // Set
+    luck = luck_;
 }

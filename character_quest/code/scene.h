@@ -24,27 +24,44 @@ public:
     // Draw
     void draw(int dSelectedButton, int scrW = scrWidth(), int scrH = scrHeight());
 
-    // --------------------------- Buttons ---------------------------
+    // Buttons
+    void drawButtons(int dSelectedButton, int scrW = scrWidth(), int scrH = scrHeight());
 
-    vector <Button*> button;
-    map <string, int> buttonId;
+    // Labels
+    void drawLabels(int scrW = scrWidth(), int scrH = scrHeight());
 
-    // Add
+    // Add button
     void addButton(Button *aButton);
 
     // Align
     void alignButtonsX(int bY);
     void alignButtonsY(int bX);
 
-    // Draw
-    void drawButtons(int dSelectedButton, int scrW = scrWidth(), int scrH = scrHeight());
+    // --------------------------- Values ---------------------------
 
-    // --------------------------- Labels ---------------------------
+    // Buttons
+    vector <Button*> getButton();
+    void setButtonVector(vector<Button*> button_);
+    void setButton(int key_, Button* value_);
 
+    // Id's
+    map <string, int> getButtonId();
+    void setButtonIdMap(map <string, int> buttonId_);
+    void setButtonId(string key_, int value_);
+
+    // Labels
+    vector <Label*> getLabel();
+    void setLabelVector(vector <Label*> label_);
+    void setLabel(int key_, Label* value_);
+
+private:
+
+    // Buttons
+    vector <Button*> button;
+    map <string, int> buttonId;
+
+    // Labels
     vector <Label*> label;
-
-    // Draw
-    void drawLabels(int scrW = scrWidth(), int scrH = scrHeight());
 };
 
 #endif // _FILE_SCENE_

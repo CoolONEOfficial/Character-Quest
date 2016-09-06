@@ -14,10 +14,10 @@ bool drawText(int dX, int dY, string dText, string size, Font *tFont, int dSX, i
         for(size_t f = 0; f < dText.size(); f++)
         {
             // Draw
-            tFont->image[dText[f]]->draw(charX, dY, size);
+            tFont->getImage()[dText[f]]->draw(charX, dY, size);
 
             // Add character X
-            charX += tFont->image[dText[f]]->width(size) + dIndent;
+            charX += tFont->getImage()[dText[f]]->width(size) + dIndent;
         }
     }
     else
@@ -36,7 +36,7 @@ int textWidth(string eText, string tSize, Font *tFont, int dIndent)
     for(size_t mChar = 0; mChar < eText.size(); mChar++)
     {
         // Current character width
-        int charWidth = tFont->image[eText[mChar]]->width(tSize);
+        int charWidth = tFont->getImage()[eText[mChar]]->width(tSize);
 
         // Add character width
         tWidth += charWidth;
@@ -55,7 +55,7 @@ int textHeight(string eText, string tSize, Font *tFont)
     for(size_t mChar = 0; mChar < eText.size(); mChar++)
     {
         // Current character height
-        int charHeight = tFont->image[eText[mChar]]->height(tSize);
+        int charHeight = tFont->getImage()[eText[mChar]]->height(tSize);
 
         // Set text height
         if(charHeight > tHeight)

@@ -11,20 +11,37 @@
 
 using namespace std;
 
+// --------------------------- Biome Object Category ---------------------------
+
 class BObjCat
 {
 public:
-    BObjCat(float cLuck = 20.0f, map <string, BObj*> cObj = {});
+    BObjCat(float luck_ = 20.0f, map <string, BObj*> object_ = {});
 
-    // Objects
-    map <string, BObj*> obj;
+    // Objects luck
+    float objectsLuck();
+
+    // Generate object
+    BObj *genObject();
+
+    // --------------------------- Values ---------------------------
+
+    // Object
+    map <string, BObj*> getObject();
+    void setObjectMap(map <string, BObj*> object_);
+    void setObject(string key_, BObj* value_);
+
+    // Luck
+    float getLuck();
+    void setLuck(float luck_);
+
+private:
+
+    // Object
+    map <string, BObj*> object;
 
     // Luck
     float luck;
-    float objLuck();
-
-    // Generate object
-    BObj *genObj();
 };
 
 #endif // _FILE_BOBJCAT_

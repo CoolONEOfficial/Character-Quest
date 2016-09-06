@@ -4,7 +4,7 @@ float randf(int limit, float minPart)
 {
     // Random float
 
-    assert(limit != 0);
+    assert(limit != 0 && ("Null limit" || true));
 
     // Find minPart
     int part = 1;

@@ -8,13 +8,6 @@
 #define FIRST_ENG_SMALL_CHAR 97
 #define LAST_ENG_SMALL_CHAR (FIRST_ENG_SMALL_CHAR + LENGTH_ENG_ALPHABET)
 
-#define DIFFERENT_RUS_CHARS 32
-#define LENGTH_RUS_ALPHABET 33
-#define FIRST_RUS_BIG_CHAR 1152
-#define LAST_RUS_BIG_CHAR (FIRST_RUS_BIG_CHAR + LENGTH_RUS_ALPHABET)
-#define FIRST_RUS_SMALL_CHAR 1184
-#define LAST_RUS_SMALL_CHAR (FIRST_RUS_SMALL_CHAR + LENGTH_RUS_ALPHABET)
-
 // --------------------------- Key Codes ---------------------------
 
 bool keyEng(char engChar, int keyStroke)

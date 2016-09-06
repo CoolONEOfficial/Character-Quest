@@ -1,43 +1,23 @@
 #include "button.h"
 
-Button::Button(string bName, float bX, float bY,
-               float bIndent, bool bAlign)
+Button::Button(string name_, float x_, float y_,
+               float indent_, bool align_)
 {
     // Name
-    name = bName;
+    setName(name_);
 
     // Coords
-    x = bX;
-    y = bY;
+    setX(x_);
+    setY(y_);
 
     // Deselect
-    select = false;
+    setSelected(false);
 
     // Indent
-    indent = bIndent;
+    setIndent(indent_);
 
     // Align
-    align = bAlign;
-}
-
-float Button::width(int scrW)
-{
-    return 2 + name.size() + indentW(scrW)*2.0;
-}
-
-float Button::height(int scrH)
-{
-    return 2 + indentH(scrH)*2 + 1;
-}
-
-int Button::indentW(int scrW)
-{
-    return alignW(indent * 2.0, scrW);
-}
-
-int Button::indentH(int scrH)
-{
-    return alignH(indent * (scrH / 24.0), scrH);
+    setAlign(align_);
 }
 
 void Button::draw(int scrW, int scrH)
@@ -70,7 +50,7 @@ void Button::draw(int scrW, int scrH)
     printw("/");
 
     // Border
-    drawUpDownBorder(scrW);
+    drawHorizontalBorder(scrW);
 
     // Angle
     move(dY, dX + width(scrW)-1);
@@ -78,7 +58,7 @@ void Button::draw(int scrW, int scrH)
 
     // Middle
 
-    if(select)
+    if(selected)
     {
         for(int f = 0; f<1 + indentH(scrH)*2; f++)
         {
@@ -99,7 +79,7 @@ void Button::draw(int scrW, int scrH)
     printw("\\");
 
     // Border
-    drawUpDownBorder(scrW);
+    drawHorizontalBorder(scrW);
 
     // Angle
     move(dY + height(scrH)-1, dX + width(scrW)-1);
@@ -110,14 +90,122 @@ void Button::draw(int scrW, int scrH)
     printw("%s", name.c_str());
 }
 
-void Button::drawUpDownBorder(int scrW)
+void Button::drawHorizontalBorder(int scrW)
 {
     // Draw up/down border
-    if(select)
+    if(selected)
     {
         for(unsigned int f = 0; f < width(scrW)-2; f++)
         {
             printw("-");
         }
     }
+}
+
+float Button::width(int scrW)
+{
+    // Width
+
+    return 2 + name.size() + indentW(scrW)*2.0;
+}
+
+float Button::height(int scrH)
+{
+    // Height
+
+    return 2 + indentH(scrH)*2 + 1;
+}
+
+int Button::indentW(int scrW)
+{
+    // Width indent
+
+    return alignW(indent * 2.0, scrW);
+}
+
+int Button::indentH(int scrH)
+{
+    // Height indent
+
+    return alignH(indent * (scrH / 24.0), scrH);
+}
+
+// --------------------------- Values ---------------------------
+
+// Name
+
+string Button::getName()
+{
+    // Get
+    return name;
+}
+void Button::setName(string name_)
+{
+    // Set
+    name = name_;
+}
+
+// X
+
+float Button::getX()
+{
+    // Get
+    return x;
+}
+void Button::setX(float x_)
+{
+    // Set
+    x = x_;
+}
+
+// Y
+
+float Button::getY()
+{
+    // Get
+    return y;
+}
+void Button::setY(float y_)
+{
+    // Set
+    y = y_;
+}
+
+// Indent
+
+float Button::getIndent()
+{
+    // Get
+    return indent;
+}
+void Button::setIndent(float indent_)
+{
+    // Set
+    indent = indent_;
+}
+
+// Selected
+
+bool Button::getSelected()
+{
+    // Get
+    return selected;
+}
+void Button::setSelected(bool selected_)
+{
+    // Set
+    selected = selected_;
+}
+
+// Align
+
+bool Button::getAlign()
+{
+    // Get
+    return align;
+}
+void Button::setAlign(bool align_)
+{
+    // Set
+    align = align_;
 }

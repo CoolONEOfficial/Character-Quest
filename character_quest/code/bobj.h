@@ -3,11 +3,24 @@
 
 #include <ncursesall.h>
 
+// --------------------------- Biome Object ---------------------------
+
 class BObj
 {
 public:
-    BObj(float oLuck = 20.0f, chtype oType = ' ');
+    BObj(float luck_ = 20.0f, chtype type_ = ' ');
 
+    // --------------------------- Values ---------------------------
+
+    // Type
+    chtype getType();
+    void setType(chtype type_);
+
+    // Luck
+    float getLuck();
+    void setLuck(float luck_);
+
+private:
     // Type
     chtype type;
 

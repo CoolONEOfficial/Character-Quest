@@ -7,7 +7,7 @@
 #include "keycodes.h"
 #include "timer.h"
 #include "gmapslot.h"
-#include "gmap.h"
+#include "saveslot.h"
 #include "biome.h"
 #include "bobj.h"
 #include "bobjcat.h"
@@ -27,6 +27,7 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include <thread>
 
 using namespace std;
 
@@ -80,7 +81,7 @@ void movePlayer(int direction);
 
 // Save / Read saves (saves, game)
 void saveSaves(string sFileName = "save.txt");
-void readSaves(string rFileName = "save.txt");
+void loadSaves(string rFileName = "save.txt");
 
 // --------------------------- Messages ---------------------------
 
@@ -106,18 +107,23 @@ size_t selectedButton;
 // Set pairs
 void initCharPairs();
 
-// --------------------------- GMaps ---------------------------
+// --------------------------- Save ---------------------------
 
-GMap *gMap[4];
+const int saveSlotNum = 4;
+SaveSlot *saveSlot[saveSlotNum];
 
 // Selected
-int selectedGMap;
+int selectedSaveSlot;
 
 // View size
-const int gMapX = 0,
-          gMapY = 0;
-const int gMapWidth = 80,
-          gMapHeight = 24;
+
+// Coords
+const int gMapX = 0;
+const int gMapY = 0;
+
+// Size
+const int gMapWidth = 80;
+const int gMapHeight = 24;
 
 // --------------------------- Biomes ---------------------------
 

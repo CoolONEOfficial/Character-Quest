@@ -1,24 +1,28 @@
 #include "character.h"
 
-Character::Character(char cNaturalImage, int cSmallWidth, int cSmallHeight, vector<string> cSmallImage,
-                     int cNormalWidth, int cNormalHeight, vector<string> cNormalImage,
-                     int cBigWidth, int cBigHeight, vector<string> cBigImage)
+Character::Character(char imageNatural_, int widthSmall_, int heightSmall_, vector<string> imageSmall_,
+                     int widthNormal_, int heightNormal_, vector<string> imageNormal_,
+                     int widthBig_, int heightBig_, vector<string> imageBig_)
 {
     // Set sizes
-    widthSmall = cSmallWidth;
-    heightSmall = cSmallHeight;
 
-    widthNormal = cNormalWidth;
-    heightNormal = cNormalHeight;
+    // Small
+    setWidthSmall(widthSmall_);
+    setHeightSmall(heightSmall_);
 
-    widthBig = cBigWidth;
-    heightBig = cBigHeight;
+    // Normal
+    setWidthNormal(widthNormal_);
+    setHeightNormal(heightNormal_);
+
+    // Big
+    setWidthBig(widthBig_);
+    setHeightBig(heightBig_);
 
     // Images
-    imageSmall = cSmallImage;
-    imageNormal = cNormalImage;
-    imageBig = cBigImage;
-    imageNatural = cNaturalImage;
+    setImageSmall(imageSmall_);
+    setImageNormal(imageNormal_);
+    setImageBig(imageBig_);
+    setImageNatural(imageNatural_);
 }
 
 int Character::width(string cSize)
@@ -27,24 +31,24 @@ int Character::width(string cSize)
 
     if(cSize == "small")
     {
-        return widthSmall;
+        return getWidthSmall();
     }
     else if(cSize == "normal")
     {
-        return widthNormal;
+        return getWidthNormal();
     }
     else if(cSize == "big")
     {
-        return widthBig;
+        return getWidthBig();
     }
     else if(cSize == "natural")
     {
         return 1;
     }
 
-    assert(true || "Wrong width size");
+    assert(false && "Wrong width size");
 
-    exit(0);
+    exit(EXIT_FAILURE);
 }
 
 int Character::height(string cSize)
@@ -53,24 +57,24 @@ int Character::height(string cSize)
 
     if(cSize == "small")
     {
-        return heightSmall;
+        return getHeightSmall();
     }
     else if(cSize == "normal")
     {
-        return heightNormal;
+        return getHeightNormal();
     }
     else if(cSize == "big")
     {
-        return heightBig;
+        return getHeightBig();
     }
     else if(cSize == "natural")
     {
         return 1;
     }
 
-    assert(true || "Wrong height size");
+    assert(false && "Wrong height size");
 
-    exit(0);
+    exit(EXIT_FAILURE);
 }
 
 void Character::draw(int dX, int dY, string size)
@@ -79,41 +83,187 @@ void Character::draw(int dX, int dY, string size)
 
     if(size != "natural")
     {
-        vector <string> cImage;
+        // Draw image
 
+        // Create
+        vector <string> dImage;
+
+        // Set
         if(size == "small")
         {
-            cImage = imageSmall;
+            dImage = getImageSmall();
         }
         else if(size == "normal")
         {
-            cImage = imageNormal;
+            dImage = getImageNormal();
         }
         else if(size == "big")
         {
-            cImage = imageBig;
+            dImage = getImageBig();
         }
 
-        for(size_t mY = 0; mY < cImage.size(); mY++)
+        // Draw
+        for(size_t mY = 0; mY < dImage.size(); mY++)
         {
-            // for 0 to string size
-            for(size_t f = 0; f < cImage[mY].size(); f++)
+            for(size_t f = 0; f < dImage[mY].size(); f++)
             {
-                if(cImage[mY][f] != ' ')
+                if(dImage[mY][f] != ' ')
                 {
                     // Move
                     move(dY + mY, dX + f);
 
                     // Draw char
-                    printw("%c",cImage[mY].c_str()[f]);
+                    printw("%c",dImage[mY].c_str()[f]);
                 }
             }
         }
     }
     else
     {
+        // Draw natural size
         move(dY, dX);
-        printw("%c", imageNatural);
+        printw("%c", getImageNatural());
     }
 }
 
+// --------------------------- Values ---------------------------
+
+// -------------------------- Images --------------------------
+
+// Small
+
+vector<string> Character::getImageSmall()
+{
+    // Get
+    return imageSmall;
+}
+void Character::setImageSmall(vector<string> imageSmall_)
+{
+    // Set
+    imageSmall = imageSmall_;
+}
+
+// Normal
+
+vector<string> Character::getImageNormal()
+{
+    // Get
+    return imageNormal;
+}
+void Character::setImageNormal(vector<string> imageNormal_)
+{
+    // Set
+    imageNormal = imageNormal_;
+}
+
+// Big
+
+vector<string> Character::getImageBig()
+{
+    // Get
+    return imageBig;
+}
+void Character::setImageBig(vector<string> imageBig_)
+{
+    // Set
+    imageBig = imageBig_;
+}
+
+// Natural
+
+char Character::getImageNatural()
+{
+    // Get
+    return imageNatural;
+}
+void Character::setImageNatural(char imageNatural_)
+{
+    // Set
+    imageNatural = imageNatural_;
+}
+
+// -------------------------- Sizes --------------------------
+
+// ------------------------- Small -------------------------
+
+// Width
+
+int Character::getWidthSmall()
+{
+    // Get
+    return widthSmall;
+}
+void Character::setWidthSmall(int widthSmall_)
+{
+    // Set
+    widthSmall = widthSmall_;
+}
+
+// Height
+
+int Character::getHeightSmall()
+{
+    // Get
+    return heightSmall;
+}
+void Character::setHeightSmall(int heightSmall_)
+{
+    // Set
+    heightSmall = heightSmall_;
+}
+
+// ------------------------- Normal -------------------------
+
+// Width
+
+int Character::getWidthNormal()
+{
+    // Get
+    return widthNormal;
+}
+void Character::setWidthNormal(int widthNormal_)
+{
+    // Set
+    widthNormal = widthNormal_;
+}
+
+// Height
+
+int Character::getHeightNormal()
+{
+    // Get
+    return heightNormal;
+}
+void Character::setHeightNormal(int heightNormal_)
+{
+    // Set
+    heightNormal = heightNormal_;
+}
+
+// ------------------------- Big -------------------------
+
+// Width
+
+int Character::getWidthBig()
+{
+    // Get
+    return widthBig;
+}
+void Character::setWidthBig(int widthBig_)
+{
+    // Set
+    widthBig = widthBig_;
+}
+
+// Height
+
+int Character::getHeightBig()
+{
+    // Get
+    return heightBig;
+}
+void Character::setHeightBig(int heightBig_)
+{
+    // Set
+    heightBig = heightBig_;
+}
