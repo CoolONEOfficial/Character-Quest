@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
         }
 
         // Set old Width / Height
-        scrOldWidth = scrWidth();
-        scrOldHeight = scrHeight();
+        scrOldWidth = screenWidth();
+        scrOldHeight = screenHeight();
 
         // Draw
         update();
@@ -74,20 +74,20 @@ int main(int argc, char *argv[])
             {
                 if(keyBackspace(keyStroke))
                 {
-                    if(!selectedScene->getLabel()[1]->getText().empty())
+                    if(!selectedScene->label[1]->getText().empty())
                     {
                         // Backspace
-                        string newText = selectedScene->getLabel()[1]->getText();
+                        string newText = selectedScene->label[1]->getText();
                         newText.pop_back();
 
-                        selectedScene->getLabel()[1]->setText(newText);
+                        selectedScene->label[1]->setText(newText);
                     }
                 }
                 else if(keyEnter(keyStroke))
                 {
                     // Create save
-                    saveSlot[selectedSaveSlot] = new SaveSlot(new GMapWorld(biome["forest"]), selectedScene->getLabel()[1]->getText());
-                    saveSlot[selectedSaveSlot]->gMap.setEmptyGMapHome(new GMapHome(biome["home"]));
+                    saveSlot[selectedSaveSlot] = new SaveSlot(new GMapWorld(biome["forest"]), selectedScene->label[1]->getText());
+                    saveSlot[selectedSaveSlot]->gMap.emptyGMapHome = new GMapHome(biome["home"]);
 
                     // To game
 
@@ -96,14 +96,14 @@ int main(int argc, char *argv[])
                 else
                 {
                     // Valid keyChar?
-                    if(selectedScene->getLabel()[1]->getFont()->getImage().find(keyChar) !=
-                       selectedScene->getLabel()[1]->getFont()->getImage().end())
+                    if(selectedScene->label[1]->font->image.find(keyChar) !=
+                       selectedScene->label[1]->font->image.end())
                     {
                         // Add keyChar
-                        string newText = selectedScene->getLabel()[1]->getText();
+                        string newText = selectedScene->label[1]->getText();
                         newText.push_back(keyChar);
 
-                        selectedScene->getLabel()[1]->setText(newText);
+                        selectedScene->label[1]->setText(newText);
                     }
                 }
             }
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void keysCommand(int keyStroke)
+void keysCommand(int keyStroke_)
 {
     // --------------------------- Keys Command ---------------------------
 
@@ -132,43 +132,43 @@ void keysCommand(int keyStroke)
     if(selectedScene == scene["game"])
     {
         // Up
-        if(keyEng('w', keyStroke))
+        if(keyEng('w', keyStroke_))
         {
-           if(!saveSlot[selectedSaveSlot]->gMap.movePlayerUp()->is_free())
+           if(!saveSlot[selectedSaveSlot]->gMap.movePlayerUp().first)
            {
                message.push_back(new PushMessage("You don't move up"));
            }
         }
 
         // Down
-        else if(keyEng('s', keyStroke))
+        else if(keyEng('s', keyStroke_))
         {
-            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerDown()->is_free())
+            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerDown().first)
             {
                 message.push_back(new PushMessage("You don't move down"));
             }
         }
 
         // Left
-        else if(keyEng('a', keyStroke))
+        else if(keyEng('a', keyStroke_))
         {
-            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerLeft()->is_free())
+            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerLeft().first)
             {
                 message.push_back(new PushMessage("You don't move left"));
             }
         }
 
         // Right
-        else if(keyEng('d', keyStroke))
+        else if(keyEng('d', keyStroke_))
         {
-            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerRight()->is_free())
+            if(!saveSlot[selectedSaveSlot]->gMap.movePlayerRight().first)
             {
                 message.push_back(new PushMessage("You don't move right"));
             }
         }
 
         // Pause
-        else if(keyEsc(keyStroke))
+        else if(keyEsc(keyStroke_))
         {
             setScene(scene["gamePause"]);
         }
@@ -178,7 +178,7 @@ void keysCommand(int keyStroke)
     else if(selectedScene == scene["main"])
     {
         // Escape
-        if(keyEsc(keyStroke))
+        if(keyEsc(keyStroke_))
         {
             setScene(scene["mainExit"]);
         }
@@ -188,7 +188,7 @@ void keysCommand(int keyStroke)
     else if(selectedScene == scene["gamePause"])
     {
         // Escape
-        if(keyEsc(keyStroke))
+        if(keyEsc(keyStroke_))
         {
             setScene(scene["game"]);
         }
@@ -198,7 +198,7 @@ void keysCommand(int keyStroke)
     else if(selectedScene == scene["gameExit"])
     {
         // Escape
-        if(keyEsc(keyStroke))
+        if(keyEsc(keyStroke_))
         {
             setScene(scene["pause"]);
         }
@@ -208,7 +208,7 @@ void keysCommand(int keyStroke)
     else if(selectedScene == scene["saves"])
     {
         // Escape
-        if(keyEsc(keyStroke))
+        if(keyEsc(keyStroke_))
         {
             setScene(scene["main"]);
         }
@@ -218,17 +218,17 @@ void keysCommand(int keyStroke)
     else if(selectedScene == scene["exit"])
     {
         // Escape
-        if(keyEsc(keyStroke))
+        if(keyEsc(keyStroke_))
         {
             setScene(scene["main"]);
         }
     }
 
     // Buttons
-    if(!selectedScene->getButton().empty())
+    if(!selectedScene->button.empty())
     {
         // Select left button
-        if(keyEng('a', keyStroke))
+        if(keyEng('a', keyStroke_))
         {
             if(selectedButton > 0)
             {
@@ -237,16 +237,16 @@ void keysCommand(int keyStroke)
         }
 
         // Select right button
-        else if(keyEng('d',  keyStroke))
+        else if(keyEng('d',  keyStroke_))
         {
-            if(selectedButton < selectedScene->getButton().size()-1)
+            if(selectedButton < selectedScene->button.size()-1)
             {
                 selectedButton++;
             }
         }
 
         // Click select button
-        else if(keyEnter(keyStroke))
+        else if(keyEnter(keyStroke_))
         {
             buttonClick();
         }
@@ -256,44 +256,42 @@ void keysCommand(int keyStroke)
 void update()
 {
     // Tact animations texts
-    if(!selectedScene->getLabel().empty())
+    if(!selectedScene->label.empty())
     {
-        for(auto mLabel: selectedScene->getLabel())
+        for(auto mLabel: selectedScene->label)
         {
             mLabel->animationTact();
         }
     }
 
     // Clear screen
-    cls();
+    erase();
 
     // Draw
 
     // Scene
-    drawScene();
+    drawScene(selectedScene);
 
     // Messages
     drawMessages();
 
     // Debug texts
 #ifdef DEBUG
-//    move(1,1);
-//    if(selectedGMap != -1)
-//    {
-//        printw("%c", gMap[selectedGMap]->biome->genCatStatic()->genObj()->type);
-//    }
+    move(0,0);
+    if(selectedSaveSlot != -1)
+    printw("x:%i y:%i", saveSlot[selectedSaveSlot]->gMap.getPlayerX(), saveSlot[selectedSaveSlot]->gMap.getPlayerY());
 #endif
 
     refresh();
 }
 
-void cls(int x, int y, int w, int h)
+void cls(int x_, int y_, int width_, int height_)
 {
     // Clear screen
 
-    for(int mY = y; mY < y + h; mY++)
+    for(int mY = y_; mY < y_ + height_; mY++)
     {
-        for(int mX = x; mX < x + w; mX++)
+        for(int mX = x_; mX < x_ + width_; mX++)
         {
             move(mY, mX);
             printw(" ");
@@ -301,69 +299,69 @@ void cls(int x, int y, int w, int h)
     }
 }
 
-void drawScene(Scene *dScene)
+void drawScene(Scene *scene_)
 {
     // Draw Scene
 
     // Main
 
-    if(dScene == scene["main"])
+    if(scene_ == scene["main"])
     {
 
     }
 
     // Main Exit
 
-    else if(dScene == scene["mainExit"])
+    else if(scene_ == scene["mainExit"])
     {
 
     }
 
     // Saves
 
-    else if(dScene == scene["saves"])
+    else if(scene_ == scene["saves"])
     {
 
     }
 
     // First game
 
-    else if(dScene == scene["savesNew"])
+    else if(scene_ == scene["savesNew"])
     {
 
     }
 
     // Game
 
-    else if(dScene == scene["game"])
+    else if(scene_ == scene["game"])
     {
         // Draw
-        saveSlot[selectedSaveSlot]->gMap.draw(gMapX, gMapY, gMapWidth, gMapHeight);
+        saveSlot[selectedSaveSlot]->gMap.draw(Rect(Coord(gameRectX, gameRectY), gameRectWidth, gameRectHeight));
     }
 
     // Pause
 
-    else if(dScene == scene["gamePause"])
+    else if(scene_ == scene["gamePause"])
     {
         // Draw game (background)
         drawScene(scene["game"]);
 
         // Label "Pause"
-        cls(0, 0, scrWidth(), scrHeight() / 3.0);
-        cls(0, scrHeight() / 3.0 * 2.0, scrWidth(), scrHeight());
+        cls(0, 0, screenWidth(), screenHeight() / 3.0);
+        cls(0, screenHeight() / 3.0 * 2.0, screenWidth(), screenHeight());
     }
 
     // Exit Pause
 
-    else if(dScene == scene["gamePauseExit"])
+    else if(scene_ == scene["gamePauseExit"])
     {
         drawScene(scene["gamePause"]);
     }
 
     // Draw other scene
-    if(dScene == selectedScene)
+    if(scene_ == selectedScene)
     {
-        dScene->draw(selectedButton);
+        scene_->draw(selectedButton, screen());
     }
 }
 
@@ -376,26 +374,26 @@ void initCharPairs()
     }
 }
 
-void setScene(Scene *sScene)
+void setScene(Scene *scene_)
 {
     // Text animation
-    if(!sScene->getLabel().empty())
+    if(!scene_->label.empty())
     {
         // Stop all texts animations
-        for(auto &mLabel: sScene->getLabel())
+        for(auto &mLabel: scene_->label)
         {
             mLabel->animationStop();
         }
 
         // Start first text animation
-        sScene->getLabel()[0]->animationStart();
+        scene_->label[0]->animationStart();
     }
 
     // Select button
     selectedButton = 0;
 
     // Set
-    selectedScene = sScene;
+    selectedScene = scene_;
 }
 
 void drawMessages()
@@ -404,9 +402,9 @@ void drawMessages()
 
     for(size_t mMsg = 0; mMsg < message.size(); mMsg++)
     {
-        if(!message[mMsg]->getDeleteTimer().finished())
+        if(!message[mMsg]->deleteTimer.finished())
         {
-            move(scrHeight() - 1 - mMsg, 0);
+            move(screenHeight() - 1 - mMsg, 0);
             printw("%s",message[mMsg]->getText().c_str());
         }
         else
@@ -425,14 +423,14 @@ void buttonClick()
     if(selectedScene == scene["main"])
     {
         // Play
-        if(selectedScene->getButton()[selectedButton]->getName() == "Play")
+        if(selectedScene->button[selectedButton]->getName() == "Play")
         {
             setScene(scene["saves"]);
             loadSaves();
         }
 
         // Continue
-        else if(selectedScene->getButton()[selectedButton]->getName() == "Continue")
+        else if(selectedScene->button[selectedButton]->getName() == "Continue")
         {
             if(selectedSaveSlot != -1 &&
                     !saveSlot[selectedSaveSlot]->is_empty())
@@ -453,7 +451,7 @@ void buttonClick()
     else if(selectedScene == scene["gamePause"])
     {
         // Exit to main
-        if(selectedScene->getButton()[selectedButton]->getName() == "Main")
+        if(selectedScene->button[selectedButton]->getName() == "Main")
         {
             // To main
             if(saveSlot[selectedSaveSlot]->saved())
@@ -467,7 +465,7 @@ void buttonClick()
         }
 
         // Save
-        else if(selectedScene->getButton()[selectedButton]->getName() == "Save")
+        else if(selectedScene->button[selectedButton]->getName() == "Save")
         {
             saveSaves("save.txt");
         }
@@ -478,13 +476,13 @@ void buttonClick()
     else if(selectedScene == scene["mainExit"])
     {
         // No
-        if(selectedScene->getButton()[selectedButton]->getName() == "No")
+        if(selectedScene->button[selectedButton]->getName() == "No")
         {
             setScene(scene["main"]);
         }
 
         // Yes
-        else if(selectedScene->getButton()[selectedButton]->getName() == "Yes")
+        else if(selectedScene->button[selectedButton]->getName() == "Yes")
         {
             exit(EXIT_SUCCESS);
         }
@@ -495,14 +493,14 @@ void buttonClick()
     else if(selectedScene == scene["gamePauseExit"])
     {
         // Save and exit
-        if(selectedScene->getButton()[selectedButton]->getName() == "Save and exit")
+        if(selectedScene->button[selectedButton]->getName() == "Save and exit")
         {
             saveSaves("save.txt");
             setScene(scene["main"]);
         }
 
         // Exit unsaved
-        else if(selectedScene->getButton()[selectedButton]->getName() == "Exit unsaved")
+        else if(selectedScene->button[selectedButton]->getName() == "Exit unsaved")
         {
             setScene(scene["main"]);
         }
@@ -512,8 +510,8 @@ void buttonClick()
 
     else if(selectedScene == scene["saves"])
     {
-        if(selectedScene->getButton()[selectedButton]->getName() == "Delete" ||
-                selectedScene->getButton()[selectedButton]->getName() == "Cancel")
+        if(selectedScene->button[selectedButton]->getName() == "Delete" ||
+                selectedScene->button[selectedButton]->getName() == "Cancel")
         {
             // To delete/load save
             deleteSave = !deleteSave;
@@ -521,7 +519,7 @@ void buttonClick()
             // Rename button
 
             // New button
-            Button* newButton =  selectedScene->getButton()[selectedButton];
+            Button* newButton =  selectedScene->button[selectedButton];
 
             if(deleteSave)
             {
@@ -535,7 +533,7 @@ void buttonClick()
             }
 
             // Set
-            selectedScene->setButton(selectedButton, newButton);
+            selectedScene->button[selectedButton] = newButton;
         }
         else
         {
@@ -553,7 +551,7 @@ void buttonClick()
                     message.push_back(new PushMessage("Deleted"));
 
                     // Button Cancel
-                    selectedButton = selectedScene->getButtonId()["Delete"];
+                    selectedButton = selectedScene->buttonId["Delete"];
                     buttonClick();
 
                     // Update saves/buttons
@@ -579,10 +577,10 @@ void buttonClick()
                     // First game
 
                     // Clear label
-                    Label *newLabel = scene["savesNew"]->getLabel()[1];
+                    Label *newLabel = scene["savesNew"]->label[1];
                     newLabel->setText(string());
 
-                    scene["savesNew"]->setLabel(1, newLabel);
+                    scene["savesNew"]->label[1] = newLabel;
 
                     // Set scene
                     setScene(scene["savesNew"]);
@@ -592,11 +590,11 @@ void buttonClick()
     }
 }
 
-void saveSaves(string sFileName)
+void saveSaves(string fileName_)
 {
     // Save
 
-    ofstream file(sFileName.c_str());
+    ofstream file(fileName_.c_str());
 
     // Old selected gMap
     file<<"oldSaveSlot "<<selectedSaveSlot<<endl;
@@ -608,14 +606,14 @@ void saveSaves(string sFileName)
         file<<"saveSlot "<<mSave<<endl;
 
             // Player name
-            file<<" playerName "<<saveSlot[mSave]->playerName<<endl;
+            file<<" playerName "<<saveSlot[mSave]->getPlayerName()<<endl;
 
             file<<" gMapWorld"<<endl;
 
                 // Biome name
                 for(auto &mBiome: biome)
                 {
-                    if(saveSlot[mSave]->gMap.getBiome() == mBiome.second)
+                    if(saveSlot[mSave]->gMap.biome == mBiome.second)
                     {
                         file<<"  biome "<<mBiome.first<<endl;
                         break;
@@ -631,7 +629,7 @@ void saveSaves(string sFileName)
                 file<<"  /player"<<endl;
 
                 // GMap slots
-                for(auto mX: saveSlot[mSave]->gMap.getSlot())
+                for(auto mX: saveSlot[mSave]->gMap.slot)
                 {
                     for(auto mY: mX.second)
                     {
@@ -648,7 +646,7 @@ void saveSaves(string sFileName)
                 }
 
                 // Home
-                for(auto mHomeX: saveSlot[mSave]->gMap.getGMapHome())
+                for(auto mHomeX: saveSlot[mSave]->gMap.gMapHome)
                 {
                     for(auto mHomeY: mHomeX.second)
                     {
@@ -657,7 +655,7 @@ void saveSaves(string sFileName)
                             // Biome name
                             for(auto &mBiome: biome)
                             {
-                                if(mHomeY.second->getBiome() == mBiome.second)
+                                if(mHomeY.second->biome == mBiome.second)
                                 {
                                     file<<"  biome "<<mBiome.first<<endl;
                                     break;
@@ -669,10 +667,10 @@ void saveSaves(string sFileName)
                             file<<"   y "<<mHomeY.first<<endl;
 
                             // Wall type
-                            file<<"   wallType "<<mHomeY.second->getWallType().getDynamicType();
+                            file<<"   wallType "<<mHomeY.second->gMapSlotWall.getDynamicType()<<endl;
 
                             // Slots
-                            for(auto mX: mHomeY.second->getSlot())
+                            for(auto mX: mHomeY.second->slot)
                             {
                                 for(auto mY: mX.second)
                                 {
@@ -706,11 +704,11 @@ void saveSaves(string sFileName)
     message.push_back(new PushMessage("Saved"));
 }
 
-void loadSaves(string rFileName)
+void loadSaves(string fileName_)
 {
     // Read Saves
 
-    ifstream file(rFileName.c_str());
+    ifstream file(fileName_.c_str());
 
     if(file.is_open())
     {
@@ -748,8 +746,12 @@ void loadSaves(string rFileName)
                     // Player Name
                     if(command == "playerName")
                     {
-                        // Set player name
-                        file>>rSaveSlot->playerName;
+                        // Get
+                        string name_;
+                        file>>name_;
+
+                        // Set
+                        rSaveSlot->setPlayerName(name_);
                     }
 
                     // GMapWorld
@@ -769,7 +771,7 @@ void loadSaves(string rFileName)
                                 string biomeName;
                                 file>>biomeName;
 
-                                rGMapWorld.setBiome(biome[biomeName]);
+                                rGMapWorld.biome = biome[biomeName];
                             }
 
                             // Game Home
@@ -794,7 +796,7 @@ void loadSaves(string rFileName)
                                         string biomeName;
                                         file>>biomeName;
 
-                                        rGMapHome->setBiome(biome[biomeName]);
+                                        rGMapHome->biome = biome[biomeName];
                                     }
 
                                     // X
@@ -814,9 +816,12 @@ void loadSaves(string rFileName)
                                     // Wall type
                                     else if(command == "wallType")
                                     {
+                                        // Get
                                         chtype wallType_;
                                         file>>wallType_;
-                                        rGMapHome->setWallType(GMapSlot(' ', wallType_));
+
+                                        // Set
+                                        rGMapHome->gMapSlotWall = GMapSlot(' ', wallType_);
                                     }
 
                                     // Slot
@@ -871,7 +876,7 @@ void loadSaves(string rFileName)
                                         assert(rGMapSlotXB && rGMapSlotYB && ("X or Y in gMapSlot uninitialized" || true));
 
                                         // Set
-                                        rGMapHome->setSlot(rGMapSlotX, rGMapSlotY, rGMapSlot);
+                                        rGMapHome->slot[rGMapSlotX][rGMapSlotY] = rGMapSlot;
                                     }
 
                                 } while(command != "/gHome");
@@ -880,7 +885,7 @@ void loadSaves(string rFileName)
                                 assert(rGMapHomeXB && rGMapHomeYB && ("X or Y in GMapHome uninitialized" || true));
 
                                 // Set
-                                rGMapWorld.setGMapHomeY(rGMapHomeX, rGMapHomeY, rGMapHome);
+                                rGMapWorld.gMapHome[rGMapHomeX][rGMapHomeY] = rGMapHome;
                             }
 
                             // Player
@@ -972,7 +977,7 @@ void loadSaves(string rFileName)
                                 assert(rGMapSlotXB && rGMapSlotYB && ("X or Y uninitialized" || true));
 
                                 // Set
-                                rGMapWorld.setSlot(rGMapSlotX, rGMapSlotY, rGMapSlot);
+                                rGMapWorld.slot[rGMapSlotX][rGMapSlotY] = rGMapSlot;
                             }
 
                         } while(command != "/gMapWorld");
@@ -991,13 +996,13 @@ void loadSaves(string rFileName)
                 // Rename Button
 
                 // New Button
-                Button* newButton = scene["saves"]->getButton()[rSaveSlotNum];
+                Button* newButton = scene["saves"]->button[rSaveSlotNum];
 
                 // Edit
-                newButton->setName(rSaveSlot->playerName);
+                newButton->setName(rSaveSlot->getPlayerName());
 
                 // Set
-                scene["saves"]->setButton(rSaveSlotNum, newButton);
+                scene["saves"]->button[rSaveSlotNum] = newButton;
             }
         }
     }

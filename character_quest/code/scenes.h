@@ -19,41 +19,41 @@ void initScenes()
 {
     // --------------------------- Screensaver ---------------------------
 
-    scene["screensaver"] = new Scene( { new Label("CoolONE", scrDWidth/8, scrDHeight/8, scrDWidth/4*3-scrDWidth/8, scrDHeight/2-scrDHeight/8, fontOld),
-                                        new Label("presents", scrDWidth/4, scrDHeight/2, scrDWidth/8*7 - scrDWidth/4, scrDHeight/2-scrDHeight/8, fontFuture) } );
+    scene["screensaver"] = new Scene( { new Label("CoolONE", screenWidthDefault/8, screenHeightDefault/8, screenWidthDefault/4*3-screenWidthDefault/8, screenHeightDefault/2-screenHeightDefault/8, fontOld),
+                                        new Label("presents", screenWidthDefault/4, screenHeightDefault/2, screenWidthDefault/8*7 - screenWidthDefault/4, screenHeightDefault/2-screenHeightDefault/8, fontFuture) } );
 
     // --------------------------- Main ---------------------------
 
-    scene["main"] = new Scene( { new Label("Character", 0, 0, scrDWidth, scrDHeight/3, fontFuture),
-                                 new Label("Quest", 0, scrDHeight/3, scrDWidth, scrDHeight/3, fontOld) },
+    scene["main"] = new Scene( { new Label("Character", 0, 0, screenWidthDefault, screenHeightDefault/3, fontFuture),
+                                 new Label("Quest", 0, screenHeightDefault/3, screenWidthDefault, screenHeightDefault/3, fontOld) },
 
                                { new Button("Play"),
                                  new Button("Continue") },
-                               true, scrDHeight/6*5 );
+                               true, screenHeightDefault/6*5 );
 
     // --------------------------- Exit ---------------------------
 
-    scene["mainExit"] = new Scene( { new Label("Really?", 0, 0, scrDWidth, scrDHeight/3*2, fontFuture) },
+    scene["mainExit"] = new Scene( { new Label("Really?", 0, 0, screenWidthDefault, screenHeightDefault/3*2, fontFuture) },
 
-                                   { new Button("No", scrDWidth/3, scrDHeight/6*5),
-                                     new Button("Yes", scrDWidth/3*2, scrDHeight/6*5) },
-                                   true, scrDHeight/6*5 );
+                                   { new Button("No", screenWidthDefault/3, screenHeightDefault/6*5),
+                                     new Button("Yes", screenWidthDefault/3*2, screenHeightDefault/6*5) },
+                                   true, screenHeightDefault/6*5 );
 
     // --------------------------- Saves ---------------------------
 
-    scene["saves"] = new Scene( { new Label("Saves", scrDWidth/6, scrDHeight/3*2/6, scrDWidth/3*2, scrDHeight/3+scrDHeight/3/3, fontFuture) },
+    scene["saves"] = new Scene( { new Label("Saves", screenWidthDefault/6, screenHeightDefault/3*2/6, screenWidthDefault/3*2, screenHeightDefault/3+screenHeightDefault/3/3, fontFuture) },
 
-                                { new Button("Slot 1", scrDWidth/6, scrDHeight/6*5),
-                                  new Button("Slot 2", scrDWidth/6*2, scrDHeight/6*5),
-                                  new Button("Slot 3", scrDWidth/6*3, scrDHeight/6*5),
-                                  new Button("Slot 4", scrDWidth/6*4, scrDHeight/6*5),
-                                  new Button("Delete", scrDWidth/6*5, scrDHeight/6*5) },
-                                true, scrDHeight/6*5 );
+                                { new Button("Slot 1", screenWidthDefault/6, screenHeightDefault/6*5),
+                                  new Button("Slot 2", screenWidthDefault/6*2, screenHeightDefault/6*5),
+                                  new Button("Slot 3", screenWidthDefault/6*3, screenHeightDefault/6*5),
+                                  new Button("Slot 4", screenWidthDefault/6*4, screenHeightDefault/6*5),
+                                  new Button("Delete", screenWidthDefault/6*5, screenHeightDefault/6*5) },
+                                true, screenHeightDefault/6*5 );
 
     // --------------------------- New Game ---------------------------
 
-    scene["savesNew"] = new Scene( { new Label("Your name?", 0, 0, scrDWidth, scrDHeight/2, fontFuture),
-                                     new Label("", 0, scrDHeight/2, scrDWidth, scrDHeight/2, fontOld, false) } );
+    scene["savesNew"] = new Scene( { new Label("Your name?", 0, 0, screenWidthDefault, screenHeightDefault/2, fontFuture),
+                                     new Label("", 0, screenHeightDefault/2, screenWidthDefault, screenHeightDefault/2, fontOld, false) } );
 
     // --------------------------- Game ---------------------------
 
@@ -61,19 +61,19 @@ void initScenes()
 
     // --------------------------- Game Pause ---------------------------
 
-    scene["gamePause"] = new Scene( { new Label("Pause", 0, 1, scrDWidth, scrDHeight/3-2, fontFuture) },
+    scene["gamePause"] = new Scene( { new Label("Pause", 0, 1, screenWidthDefault, screenHeightDefault/3-2, fontFuture) },
 
-                                    { new Button("Save", scrDWidth/3, scrDHeight/6*5),
-                                      new Button("Main", scrDWidth/3*2, scrDHeight/6*5) },
-                                    true, scrDHeight/6*5 );
+                                    { new Button("Save", screenWidthDefault/3, screenHeightDefault/6*5),
+                                      new Button("Main", screenWidthDefault/3*2, screenHeightDefault/6*5) },
+                                    true, screenHeightDefault/6*5 );
 
     // --------------------------- Game Pause Exit ---------------------------
 
-    scene["gamePauseExit"] = new Scene( { new Label("You not saved!", 0, 1, scrDWidth, scrDHeight/3-2, fontFuture) },
+    scene["gamePauseExit"] = new Scene( { new Label("You not saved!", 0, 1, screenWidthDefault, screenHeightDefault/3-2, fontFuture) },
 
-                                        { new Button("Save and exit", scrDWidth/3, scrDHeight/6*5),
-                                          new Button("Exit unsaved", scrDWidth/3*2, scrDHeight/6*5) },
-                                        true, scrDHeight/6*5 );
+                                        { new Button("Save and exit", screenWidthDefault/3, screenHeightDefault/6*5),
+                                          new Button("Exit unsaved", screenWidthDefault/3*2, screenHeightDefault/6*5) },
+                                        true, screenHeightDefault/6*5 );
 }
 
 #endif // _FILE_SCENES_

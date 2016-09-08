@@ -16,40 +16,10 @@ using namespace std;
 class Biome
 {
 public:
-    Biome(float dynamiclLuck_ = 20.0f,
-          map <string, BObjCat*> catStatic_ = {},
-          map <string, BObjCat*> catDynamic_ = {});
+    explicit Biome(float dynamiclLuck_ = 20.0f,
+                          map <string, BObjCat*> catStatic_ = {},
+                          map <string, BObjCat*> catDynamic_ = {});
 
-    // Categories luck
-    float catsLuck(map<string, BObjCat *> mapCats);
-
-    // Generate category
-    BObjCat *genCat(map<string, BObjCat *> mapCats);
-    BObjCat *genCatStatic();
-    BObjCat *genCatDynamic();
-
-    // Emty
-    bool is_empty();
-
-    // --------------------------- Values ---------------------------
-
-    // Categories
-
-    // Dynamic
-    map<string,BObjCat*> getCatDynamic();
-    void setCatDynamicMap(map<string,BObjCat*> catDynamic_);
-    void setCatDynamic(string key_, BObjCat* value_);
-
-    // Static
-    map<string,BObjCat*> getCatStatic();
-    void setCatStaticMap(map<string, BObjCat*> catStatic_);
-    void setCatStatic(string key_, BObjCat* value_);
-
-    // Dynamic luck
-    float getDynamicLuck();
-    void setDynamicLuck(float dynamicLuck_);
-
-private:
     // Categories
 
     // Static
@@ -58,8 +28,27 @@ private:
     // Dynamic
     map<string,BObjCat*> catDynamic;
 
+    // Generate category
+    BObjCat *genCat(map<string, BObjCat *> mapCats);
+    BObjCat *genCatStatic();
+    BObjCat *genCatDynamic();
+
+    // Categories luck
+    float catsLuck(map<string, BObjCat *> mapCats);
+
+private:
     // Dynamic luck
     float dynamicLuck;
+public:
+
+    // Emty
+    bool is_empty();
+
+    // --------------------------- Encapsulation ---------------------------
+
+    // Dynamic luck
+    float getDynamicLuck();
+    void setDynamicLuck(float dynamicLuck_);
 };
 
 #endif // _FILE_BIOME_

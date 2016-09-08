@@ -20,7 +20,7 @@ bool GMapSlot::is_free()
     return getDynamicType() == ' ';
 }
 
-// --------------------------- Values ---------------------------
+// --------------------------- Encapsulation ---------------------------
 
 // Types
 

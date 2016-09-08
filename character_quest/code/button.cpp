@@ -20,54 +20,47 @@ Button::Button(string name_, float x_, float y_,
     setAlign(align_);
 }
 
-void Button::draw(int scrW, int scrH)
+void Button::draw(Rect *screen_)
 {
     // Draw
 
-    int dX;
-    int dY;
+    // Set draw coords
+
+    Coord drawCoord(x - width(screen_->getWidth())/2, y - height(screen_->getHeight())/2);
 
     if(align)
     {
-        dX = alignW(x, scrW);
-        dY = alignH(y, scrH);
+        drawCoord.setX(alignX(drawCoord.getX(), screen_->getWidth()));
+        drawCoord.setY(alignY(drawCoord.getY(), screen_->getHeight()));
     }
-    else
-    {
-        dX = x;
-        dY = y;
-    }
-
-    dX -= width(scrW)/2.0;
-    dY -= height(scrH)/2.0;
 
     // Borders
 
     // Up
 
     // Angle
-    move(dY, dX);
+    move(drawCoord.getY(), drawCoord.getX());
     printw("/");
 
     // Border
-    drawHorizontalBorder(scrW);
+    drawHorizontalBorder(screen_);
 
     // Angle
-    move(dY, dX + width(scrW)-1);
+    move(drawCoord.getY(), drawCoord.getX() + width(screen_->getWidth())-1);
     printw("\\");
 
     // Middle
 
     if(selected)
     {
-        for(int f = 0; f<1 + indentH(scrH)*2; f++)
+        for(int f = 0; f<1 + indentH(screen_->getHeight())*2; f++)
         {
             // Left
-            move(dY+1 + f, dX);
+            move(drawCoord.getY()+1 + f, drawCoord.getX());
             printw("|");
 
             // Right
-            move(dY+1 + f, dX + width(scrW)-1);
+            move(drawCoord.getY()+1 + f, drawCoord.getX() + width(screen_->getWidth())-1);
             printw("|");
         }
     }
@@ -75,59 +68,59 @@ void Button::draw(int scrW, int scrH)
     // Down
 
     // Angle
-    move(dY + height(scrH)-1, dX);
+    move(drawCoord.getY() + height(screen_->getHeight())-1, drawCoord.getX());
     printw("\\");
 
     // Border
-    drawHorizontalBorder(scrW);
+    drawHorizontalBorder(screen_);
 
     // Angle
-    move(dY + height(scrH)-1, dX + width(scrW)-1);
+    move(drawCoord.getY() + height(screen_->getHeight())-1, drawCoord.getX() + width(screen_->getWidth())-1);
     printw("/");
 
     // Name
-    move(dY+1 + indentH(scrH), dX+1 + indentW(scrW));
+    move(drawCoord.getY()+1 + indentH(screen_->getHeight()), drawCoord.getX()+1 + indentW(screen_->getWidth()));
     printw("%s", name.c_str());
 }
 
-void Button::drawHorizontalBorder(int scrW)
+void Button::drawHorizontalBorder(Rect *screen_)
 {
     // Draw up/down border
     if(selected)
     {
-        for(unsigned int f = 0; f < width(scrW)-2; f++)
+        for(unsigned int f = 0; f < width(screen_->getWidth())-2; f++)
         {
             printw("-");
         }
     }
 }
 
-float Button::width(int scrW)
+float Button::width(int screenWidth_)
 {
     // Width
 
-    return 2 + name.size() + indentW(scrW)*2.0;
+    return 2 + name.size() + indentW(screenWidth_)*2.0;
 }
 
-float Button::height(int scrH)
+float Button::height(int screenHeight_)
 {
     // Height
 
-    return 2 + indentH(scrH)*2 + 1;
+    return 2 + indentH(screenHeight_)*2 + 1;
 }
 
-int Button::indentW(int scrW)
+int Button::indentW(int screenWidth_)
 {
     // Width indent
 
-    return alignW(indent * 2.0, scrW);
+    return alignX(indent * 2.0, screenWidth_);
 }
 
-int Button::indentH(int scrH)
+int Button::indentH(int screenHeight_)
 {
     // Height indent
 
-    return alignH(indent * (scrH / 24.0), scrH);
+    return alignY(indent * (screenHeight_ / 24.0), screenHeight_);
 }
 
 // --------------------------- Values ---------------------------

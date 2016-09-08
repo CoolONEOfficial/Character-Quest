@@ -10,13 +10,22 @@ class GMapSlot
 public:
     explicit GMapSlot(chtype staticType_ = ' ', chtype dynamicType_ = ' ');
 
+    // Types
+private:
+    // Static
+    chtype staticType;
+
+    // Dynamic
+    chtype dynamicType;
+public:
+
     // Free
     bool is_free();
 
     // Empty
     bool is_empty();
 
-    // --------------------------- Values ---------------------------
+    // --------------------------- Encapsualtion ---------------------------
 
     // Types
 
@@ -27,15 +36,6 @@ public:
     // Dynamic
     chtype getDynamicType();
     void setDynamicType(chtype dynamicType_);
-
-private:
-    // Types
-
-    // Static
-    chtype staticType;
-
-    // Dynamic
-    chtype dynamicType;
 };
 
 #endif // _FILE_GMAPSLOT_

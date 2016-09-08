@@ -17,13 +17,49 @@ using namespace std;
 class Label
 {
 public:
-    Label(string lText, int x_, int y_, int width_, int height_, const Font *font_,
-          bool animation_ = true, float animationSpeed_ = 0.01f, int indent_ = 2, bool align_ = true);
+    explicit Label(string lText, int x_, int y_, int width_, int height_, const Font *font_,
+                       bool animation_ = true, float animationSpeed_ = 0.01f, int indent_ = 2, bool align_ = true);
+
+private:
+    // Coords
+    int x;
+    int y;
+
+    // Width / Height
+    int width;
+    int height;
+
+    // Text
+    string text;
+
+    // Indent
+    int indent;
+
+    // Align
+    bool align;
+public:
+
+    // Font
+    Font* font;
 
     // Draw
     bool draw(int scrW, int scrH);
 
     // --------------------------- Animation ---------------------------
+
+    // Timer
+    Timer* animationTimer;
+
+private:
+    // View size
+    float animationValue;
+
+    // Speed
+    float animationSpeed;
+
+    // Bool
+    bool animation;
+public:
 
     // Text
     string animationText();
@@ -41,7 +77,7 @@ public:
     void animationOn();
     void animationOff();
 
-    // --------------------------- Values ---------------------------
+    // --------------------------- Encapsulation ---------------------------
 
     // Coords
 
@@ -67,10 +103,6 @@ public:
     string getText();
     void setText(string text_);
 
-    // Font
-    Font* getFont();
-    void setFont(Font* font_);
-
     // Indent
     int getIndent();
     void setIndent(int indent_);
@@ -80,10 +112,6 @@ public:
     void setAlign(bool align_);
 
     // --------------------------- Animation values ---------------------------
-
-    // Timer
-    Timer* getAnimationTimer();
-    void setAnimationTimer(Timer* animationTimer_);
 
     // View size
     float getAnimationValue();
@@ -96,41 +124,6 @@ public:
     // Bool
     bool getAnimation();
     void setAnimation(bool animation_);
-
-private:
-    // Coords
-    int x;
-    int y;
-
-    // Width / Height
-    int width;
-    int height;
-
-    // Text
-    string text;
-
-    // Font
-    Font* font;
-
-    // Indent
-    int indent;
-
-    // Align
-    bool align;
-
-    // --------------------------- Animation values ---------------------------
-
-    // Timer
-    Timer* animationTimer;
-
-    // View size
-    float animationValue;
-
-    // Speed
-    float animationSpeed;
-
-    // Bool
-    bool animation;
 };
 
 #endif // _FILE_LABEL_

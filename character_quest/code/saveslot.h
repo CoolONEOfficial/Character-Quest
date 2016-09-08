@@ -14,19 +14,26 @@ using namespace std;
 class SaveSlot
 {
 public:
-    SaveSlot(GMapWorld *sGMap = new GMapWorld(), string sPlayerName = "Empty");
+    explicit SaveSlot(GMapWorld *gMapWorld_ = new GMapWorld(), string playerName_ = "Empty");
 
     // Game Map
     GMapWorld gMap;
 
     // Player name
+private:
     string playerName;
+public:
 
     // Saved
     bool saved();
 
     // Emty
     bool is_empty();
+
+    // --------------------------- Encapsulation ---------------------------
+
+    string getPlayerName();
+    void setPlayerName(string playerName_);
 };
 
 #endif // _FILE_SAVESLOT_

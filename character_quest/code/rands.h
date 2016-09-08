@@ -7,13 +7,13 @@
 // --------------------------- Randoms ---------------------------
 
 // Float
-float randf(int limit, float minPart = 0.01);
+float randf(int limit_, float minimalPart_ = 0.01);
 
 // Integer
-int randi(int limit);
+int randi(int limit_);
 
 // Luck
-bool luck(float chance, float limit = 100.0);
+bool luck(float chance_, float limit_ = 100.0);
 
 #endif // _FILE_RANDS_
 

@@ -16,32 +16,27 @@ using namespace std;
 class BObjCat
 {
 public:
-    BObjCat(float luck_ = 20.0f, map <string, BObj*> object_ = {});
-
-    // Objects luck
-    float objectsLuck();
-
-    // Generate object
-    BObj *genObject();
-
-    // --------------------------- Values ---------------------------
-
-    // Object
-    map <string, BObj*> getObject();
-    void setObjectMap(map <string, BObj*> object_);
-    void setObject(string key_, BObj* value_);
-
-    // Luck
-    float getLuck();
-    void setLuck(float luck_);
-
-private:
+    explicit BObjCat(float luck_ = 20.0f, map <string, BObj*> object_ = {});
 
     // Object
     map <string, BObj*> object;
 
+    // Generate object
+    BObj *genObject();
+
+    // Objects luck
+    float objectsLuck();
+
+private:
     // Luck
     float luck;
+public:
+
+    // --------------------------- Encapsulation ---------------------------
+
+    // Luck
+    float getLuck();
+    void setLuck(float luck_);
 };
 
 #endif // _FILE_BOBJCAT_

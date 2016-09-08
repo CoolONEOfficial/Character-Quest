@@ -1,16 +1,22 @@
 #include "gmaphome.h"
 
-GMapHome::GMapHome(Biome *hBiome, GMapSlot hWallType)
-    : GMap(hBiome)
+GMapHome::GMapHome(Biome *biome_, GMapSlot wall_, GMapSlot door_)
+    : GMap(biome_)
 {
     // Biome
-    setBiome(hBiome);
+    biome = biome_;
 
     // Wall type
-    setWallType(hWallType);
+    gMapSlotWall = wall_;
+
+    // Door type
+    gMapSlotDoor = door_;
 
     // Not Generated
     setGenerated(false);
+
+    // Entered
+    setEntered(true);
 }
 
 void GMapHome::generate(int dW, int dH)
@@ -20,37 +26,31 @@ void GMapHome::generate(int dW, int dH)
     // Set
 
     // Width
-    int hWidth = 14;
-
-    int addChance = 100;
-    while(luck(addChance))
-    {
-        // Add width
-        hWidth++;
-
-        // Reduce chance
-        addChance -= 10;
-    }
+    int hWidth = 10 + randi(10);
 
     // Height
     int hHeight = hWidth/2;
 
     // Create clear slots
-    for(int mX = -hWidth; mX < alignW(dW) + hWidth*2; mX++)
+    for(int mX = -hWidth; mX < alignX(dW) + hWidth*2; mX++)
     {
         // X
-        int x = cameraX(alignW(dW)) + mX;
+        int x = cameraX(alignX(dW)) + mX;
 
-        for(int mY = -hHeight; mY < alignH(dH) + hHeight*2; mY++)
+        for(int mY = -hHeight; mY < alignY(dH) + hHeight*2; mY++)
         {
             // Y
-            int y = cameraY(alignH(dH)) + mY;
+            int y = cameraY(alignY(dH)) + mY;
 
             // Create
 
-            setSlot(x, y, new GMapSlot());
+            slot[x][y] = new GMapSlot();
         }
     }
+
+    // Home coords
+    const int homeX = -hWidth/2;
+    const int homeY = -hHeight/2;
 
     // Generate
 
@@ -59,70 +59,159 @@ void GMapHome::generate(int dW, int dH)
     {
         for(int mY = -hHeight/2; mY < hHeight/2; mY++)
         {
-            setSlot(mX, mY, generateSlot());
+            slot[mX][mY] = generateSlot();
         }
     }
 
     // Walls
 
-    // Up/Down
+    // Up / Down
     for(int mX = -hWidth/2; mX <= hWidth/2; mX++)
     {
-        setSlot(mX, -hHeight/2, &wallType);
-        setSlot(mX, hHeight/2, &wallType);
+        // Wall
+
+        slot[mX][-hHeight/2] = &gMapSlotWall;
+        slot[mX][hHeight/2] = &gMapSlotWall;
     }
 
-    // Left/Right
+    // Left / Right
     for(int mY = -hHeight/2; mY <= hHeight/2; mY++)
     {
-        setSlot(-hWidth/2, mY, &wallType);
-        setSlot(hWidth/2, mY, &wallType);
+        // Wall
+
+        slot[-hWidth/2][mY] = &gMapSlotWall;
+        slot[hWidth/2][mY] = &gMapSlotWall;
+    }
+
+    // Door
+
+    // Select angle (left up / right down)
+
+    // Left Up
+    int angleX = homeX;
+    int angleY = homeY;
+
+    bool leftUp = true;
+
+    // Right down
+    if(luck(50.0f))
+    {
+        angleX *= -1;
+        angleY *= -1;
+
+        leftUp = false;
+    }
+
+    // Get indent
+    int indentX = 1+randi(hWidth-2);
+    int indentY = 1+randi(hHeight-2);
+
+    if(!leftUp)
+    {
+        indentX *= -1;
+        indentY *= -1;
+    }
+
+    // Set
+    int doorX = angleX + indentX;
+    int doorY = angleY + indentY;
+
+    if(luck(50.0f))
+    {
+        slot[homeX][doorY] = &gMapSlotDoor;
+        doorX = angleX;
+    }
+    else
+    {
+        slot[doorX][homeY] = &gMapSlotDoor;
+        doorY = angleY;
+    }
+
+    // Set player coords
+
+    // Get
+    int playerX_ = getPlayerX();
+    int playerY_ = getPlayerY();
+
+    if(leftUp)
+    {
+        if(angleX == doorX)
+        {
+            playerX_ = doorX+1;
+            playerY_ = doorY;
+        }
+        else if(angleY == doorY)
+        {
+            playerY_ = doorY+1;
+            playerX_ = doorX;
+        }
+    }
+    else
+    {
+        if(angleX == doorX)
+        {
+            playerX_ = doorX-1;
+            playerY_ = doorY;
+        }
+        else if(angleY == doorY)
+        {
+            playerY_ = doorY-1;
+            playerX_ = doorX;
+        }
+    }
+
+    // Set
+    setPlayerX(playerX_);
+    setPlayerY(playerY_);
+
+    // Set free generated slot of player coords
+    GMapSlot *slot_;
+    while(!slot[getPlayerX()][getPlayerY()]->is_free())
+    {
+        // Generate
+        slot_ = generateSlot();
+
+        // Set
+        slot[playerX_][playerY_] = slot_;
     }
 
     // Generated
-    generated = true;
+    setGenerated(true);
 }
 
-void GMapHome::draw(int dX, int dY, int dW, int dH, bool gen)
+void GMapHome::draw(Rect drawRect_, bool generate_)
 {
     // Draw
 
-    GMap::draw(dX, dY, dW, dH, gen && !getGenerated());
+    GMap::draw(drawRect_, generate_ && !getGenerated());
 }
 
-GMapSlot *GMapHome::movePlayer(int mX, int mY)
+pair<bool, GMapSlot *> GMapHome::movePlayer(int changeX_, int changeY_)
 {
     // Move player
 
-    GMapSlot *gotoSlot = getSlot()[getPlayerX() + mX][getPlayerY() + mY];
+    pair<bool, GMapSlot*> returnPair = GMap::movePlayer(changeX_, changeY_);
 
-    // Move
-    GMap::movePlayer(mX, mY);
+    if(returnPair.second->getDynamicType() == gMapSlotDoor.getDynamicType())
+    {
+        // Exit home
+        setEntered(false);
 
-    return gotoSlot;
+        // Not solid slot
+        returnPair.first = true;
+    }
+
+    return returnPair;
 }
 
 bool GMapHome::is_empty()
 {
     // Empty
 
-    return getBiome()->is_empty();
+    return biome->is_empty();
 }
 
-// --------------------------- Values ---------------------------
-
-// Wall type
-
-GMapSlot GMapHome::getWallType()
-{
-    // Get
-    return wallType;
-}
-void GMapHome::setWallType(GMapSlot wallType_)
-{
-    // Set
-    wallType = wallType_;
-}
+// --------------------------- Encapsulation ---------------------------
 
 // Generated
 
@@ -135,4 +224,17 @@ void GMapHome::setGenerated(bool generated_)
 {
     // Set
     generated = generated_;
+}
+
+// Entered
+
+bool GMapHome::getEntered()
+{
+    // Get
+    return entered;
+}
+void GMapHome::setEntered(bool entered_)
+{
+    // Set
+    entered = entered_;
 }

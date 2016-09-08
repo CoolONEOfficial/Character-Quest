@@ -1,6 +1,6 @@
 #include "rands.h"
 
-float randf(int limit, float minPart)
+float randf(int limit, float minimalPart_)
 {
     // Random float
 
@@ -11,10 +11,10 @@ float randf(int limit, float minPart)
 
     do
     {
-        minPart *= 10;
+        minimalPart_ *= 10;
         part *= 10;
 
-    }while(minPart < 1);
+    }while(minimalPart_ < 1);
 
     // Generate float
     int limitInt = limit;
@@ -26,20 +26,20 @@ float randf(int limit, float minPart)
     return randInt + randFloat;
 }
 
-int randi(int limit)
+int randi(int limit_)
 {
     // Random Int
 
-    return rand() % limit;
+    return rand() % limit_;
 }
 
-bool luck(float chance, float limit)
+bool luck(float chance_, float limit_)
 {
     // Luck
 
-    float random = randf(limit);
+    float random = randf(limit_);
 
-    if(random < chance)
+    if(random < chance_)
     {
         return true;
     }

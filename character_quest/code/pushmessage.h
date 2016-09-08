@@ -12,24 +12,21 @@ using namespace std;
 class PushMessage
 {
 public:
-    PushMessage(string text_ = "Text...", Timer deleteTimer_ = Timer(2000));
+    explicit PushMessage(string text_ = "Text...", Timer deleteTimer_ = Timer(2000));
 
-    // --------------------------- Values ---------------------------
+    // Timer
+    Timer deleteTimer;
+
+    // --------------------------- Encapsulation ---------------------------
 
     // Text
     string getText();
     void setText(string text_);
 
-    // Timer
-    Timer getDeleteTimer();
-    void setDeleteTimer(Timer deleteTimer_);
-
-private:
     // Text
+private:
     string text;
-
-    // Timer
-    Timer deleteTimer;
+public:
 };
 
 #endif // _FILE_PUSHMESSAGE_

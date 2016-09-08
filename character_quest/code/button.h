@@ -2,6 +2,8 @@
 #define _FILE_BUTTON_
 
 #include "screen.h"
+#include "rect.h"
+#include "coord.h"
 
 #include <string>
 #include <ncursesall.h>
@@ -13,22 +15,41 @@ using namespace std;
 class Button
 {
 public:
-    Button(string name_ = "button", float x_ = 0, float y_ = 0,
+    explicit Button(string name_ = "button", float x_ = 0, float y_ = 0,
            float indent_ = 1, bool align_ = true);
 
-    // Draw
-    void draw(int scrW, int scrH);
-    void drawHorizontalBorder(int scrW);
+private:
+    // Name
+    string name;
+
+    // Coords
+    float x, y;
+public:
 
     // Size
-    float width(int scrW);
-    float height(int scrH);
+    float width(int screenWidth_);
+    float height(int screenHeight_);
 
     // Indent
-    int indentW(int scrW);
-    int indentH(int scrH);
+private:
+    float indent;
+public:
+    int indentW(int screenWidth_);
+    int indentH(int screenHeight_);
 
-    // --------------------------- Values ---------------------------
+    // Draw
+    void draw(Rect* screen_);
+    void drawHorizontalBorder(Rect* screen_);
+
+private:
+    // Selected
+    bool selected;
+
+    // Align
+    bool align;
+public:
+
+    // --------------------------- Encapsulation ---------------------------
 
     // Name
     string getName();
@@ -51,22 +72,6 @@ public:
     // Align
     bool getAlign();
     void setAlign(bool align_);
-
-private:
-    // Name
-    string name;
-
-    // Coords
-    float x, y;
-
-    // Indent
-    float indent;
-
-    // Selected
-    bool selected;
-
-    // Align
-    bool align;
 };
 
 #endif // _FILE_BUTTON_

@@ -1,23 +1,23 @@
 #include "text.h"
 
-bool drawText(int dX, int dY, string dText, string size, Font *tFont, int dSX, int dSY, int dSW, int dSH, int dIndent)
+bool drawText(int x_, int y_, string text_, string size_, Font *font_, int sX_, int sY_, int sWidth_, int sHeight_, int indent_)
 {
     // Draw text
 
-    if(dX >= dSX &&
-       dY >= dSY &&
-       dX + textWidth(dText, size, tFont, dIndent) <= dSX + dSW &&
-       dY + textHeight(dText, size, tFont) <= dSY + dSH)
+    if(x_ >= sX_ &&
+       y_ >= sY_ &&
+       x_ + textWidth(text_, size_, font_, indent_) <= sX_ + sWidth_ &&
+       y_ + textHeight(text_, size_, font_) <= sY_ + sHeight_)
     {
         // Draw
-        int charX = dX;
-        for(size_t f = 0; f < dText.size(); f++)
+        int charX = x_;
+        for(size_t f = 0; f < text_.size(); f++)
         {
             // Draw
-            tFont->getImage()[dText[f]]->draw(charX, dY, size);
+            font_->image[text_[f]]->draw(charX, y_, size_);
 
             // Add character X
-            charX += tFont->getImage()[dText[f]]->width(size) + dIndent;
+            charX += font_->image[text_[f]]->width(size_) + indent_;
         }
     }
     else
@@ -28,34 +28,34 @@ bool drawText(int dX, int dY, string dText, string size, Font *tFont, int dSX, i
     return true;
 }
 
-int textWidth(string eText, string tSize, Font *tFont, int dIndent)
+int textWidth(string text_, string size_, Font *font_, int indent_)
 {
     // Get text width
 
     int tWidth = 0;
-    for(size_t mChar = 0; mChar < eText.size(); mChar++)
+    for(size_t mChar = 0; mChar < text_.size(); mChar++)
     {
         // Current character width
-        int charWidth = tFont->getImage()[eText[mChar]]->width(tSize);
+        int charWidth = font_->image[text_[mChar]]->width(size_);
 
         // Add character width
         tWidth += charWidth;
     }
     // Add all indents
-    tWidth += dIndent * (eText.size()-1);
+    tWidth += indent_ * (text_.size()-1);
 
     return tWidth;
 }
 
-int textHeight(string eText, string tSize, Font *tFont)
+int textHeight(string text_, string size_, Font *font_)
 {
     // Get text height
 
     int tHeight = 0;
-    for(size_t mChar = 0; mChar < eText.size(); mChar++)
+    for(size_t mChar = 0; mChar < text_.size(); mChar++)
     {
         // Current character height
-        int charHeight = tFont->getImage()[eText[mChar]]->height(tSize);
+        int charHeight = font_->image[text_[mChar]]->height(size_);
 
         // Set text height
         if(charHeight > tHeight)

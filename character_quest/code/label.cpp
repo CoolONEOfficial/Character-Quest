@@ -37,10 +37,10 @@ Label::Label(string lText, int x_, int y_, int width_, int height_, const Font *
     setAlign(align_);
 
     // Font Id
-    setFont( (Font*)font_);
+    font = (Font*)font_;
 
     // Timer
-    setAnimationTimer(new Timer(animationSpeed_));
+    animationTimer = new Timer(animationSpeed_);
 }
 
 string Label::animationText()
@@ -85,7 +85,7 @@ void Label::animationTact()
     {
         if(animationStarted())
         {
-            if(getAnimationTimer()->finished())
+            if(animationTimer->finished())
             {
                 // Tact
                 animationValue += animationSpeed;
@@ -142,36 +142,36 @@ bool Label::draw(int scrW, int scrH)
     // Draw label
 
     // Center coords
-    int lCX = alignW(x + width/2, scrW);
-    int lCY = alignH(y + height/2, scrH);
+    int lCX = alignX(x + width/2, scrW);
+    int lCY = alignY(y + height/2, scrH);
 
     // Try Big size
     if(!drawText(lCX - textWidth(text, "big", font) / 2,
                  lCY - textHeight(text, "big", font) / 2,
                  animationText(), "big", font,
-                 alignW(x, scrW), alignH(y, scrH),
-                 alignW(width, scrW), alignH(height, scrH), indent))
+                 alignX(x, scrW), alignY(y, scrH),
+                 alignX(width, scrW), alignY(height, scrH), indent))
     {
         // Try Normal size
         if(!drawText(lCX - textWidth(text, "normal", font) / 2,
                      lCY - textHeight(text, "normal", font) / 2,
                      animationText(), "normal", font,
-                     alignW(x, scrW), alignH(y, scrH),
-                     alignW(width, scrW), alignH(height, scrH), indent))
+                     alignX(x, scrW), alignY(y, scrH),
+                     alignX(width, scrW), alignY(height, scrH), indent))
         {
             // Try Small size
             if(!drawText(lCX - textWidth(text, "small", font) / 2,
                          lCY - textHeight(text, "small", font) / 2,
                          animationText(), "small", font,
-                         alignW(x, scrW), alignH(y, scrH),
-                         alignW(width, scrW), alignH(height, scrH), indent))
+                         alignX(x, scrW), alignY(y, scrH),
+                         alignX(width, scrW), alignY(height, scrH), indent))
             {
                 // Try Natural size
                 return drawText(lCX - textWidth(text, "natural", font) / 2,
                                 lCY - textHeight(text, "natural", font) / 2,
                                 animationText(), "natural", font,
-                                alignW(x, scrW), alignH(y, scrH),
-                                alignW(width, scrW), alignH(height, scrH), indent);
+                                alignX(x, scrW), alignY(y, scrH),
+                                alignX(width, scrW), alignY(height, scrH), indent);
             }
         }
     }
@@ -179,7 +179,7 @@ bool Label::draw(int scrW, int scrH)
     return true;
 }
 
-// --------------------------- Values ---------------------------
+// --------------------------- Encapsulation ---------------------------
 
 // Coords
 
@@ -250,19 +250,6 @@ void Label::setText(string text_)
     text = text_;
 }
 
-// Font
-
-Font *Label::getFont()
-{
-    // Get
-    return font;
-}
-void Label::setFont(Font *font_)
-{
-    // Set
-    font = font_;
-}
-
 // Indent
 
 int Label::getIndent()
@@ -287,19 +274,6 @@ void Label::setAlign(bool align_)
 {
     // Set
     align = align_;
-}
-
-// Timer
-
-Timer *Label::getAnimationTimer()
-{
-    // Get
-    return animationTimer;
-}
-void Label::setAnimationTimer(Timer *animationTimer_)
-{
-    // Set
-    animationTimer = animationTimer_;
 }
 
 // Value

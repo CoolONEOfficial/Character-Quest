@@ -3,41 +3,30 @@
 
 #include "gmap.h"
 #include "gmaphome.h"
+#include "rect.h"
+#include "coord.h"
 
 // --------------------------- Game Map World ---------------------------
 
 class GMapWorld : public GMap
 {
 public:
-    GMapWorld(Biome *gBiome = new Biome(), GMapHome *gMapHome =  new GMapHome());
-
-    // Draw
-    void draw(int dX, int dY, int dW, int dH, bool gen = true);
+    explicit GMapWorld(Biome *biome_ = new Biome(), GMapHome *emptyGMapHome_ =  new GMapHome());
 
     // Move player
-    GMapSlot* movePlayer(int mX, int mY);
+    pair<bool, GMapSlot*> movePlayer(int changeX_, int changeY_);
 
-    // Find home
-    bool findGMapHome(int sX, int sY);
-
-    // --------------------------- Values ---------------------------
-
-    // Map Homes
-    map<int, map<int, GMapHome*>> getGMapHome();
-    void setGMapHome(map<int, map<int, GMapHome*>> gMapHome_);
-    void setGMapHomeX(int x_, map<int, GMapHome*> gMapHome_);
-    void setGMapHomeY(int x_, int y_, GMapHome* gMapHome_);
-
-    // Empty Home
-    GMapHome* getEmptyGMapHome();
-    void setEmptyGMapHome(GMapHome* emptyGMapHome_);
-
-private:
     // Map Homes
     map<int, map<int, GMapHome*>> gMapHome;
 
     // Empty Home
     GMapHome* emptyGMapHome;
+
+    // Find home
+    bool findGMapHome(int x_, int y_);
+
+    // Draw
+    void draw(Rect rect_, bool generate_ = true);
 };
 
 #endif // _FILE_GMAPWORLD_

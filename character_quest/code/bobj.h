@@ -8,9 +8,17 @@
 class BObj
 {
 public:
-    BObj(float luck_ = 20.0f, chtype type_ = ' ');
+    explicit BObj(float luck_ = 20.0f, chtype type_ = ' ');
 
-    // --------------------------- Values ---------------------------
+private:
+    // Type
+    chtype type;
+
+    // Luck
+    float luck;
+public:
+
+    // --------------------------- Encapsulation ---------------------------
 
     // Type
     chtype getType();
@@ -19,13 +27,6 @@ public:
     // Luck
     float getLuck();
     void setLuck(float luck_);
-
-private:
-    // Type
-    chtype type;
-
-    // Luck
-    float luck;
 };
 
 #endif // _FILE_BOBJ_

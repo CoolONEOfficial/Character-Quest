@@ -1,10 +1,10 @@
 #include "timer.h"
 
-clock_t timer(int mSecs)
+clock_t timer(int mSecs_)
 {
     // Get timer
 
-    return clock() + (mSecs * CLOCKS_PER_MSEC);
+    return clock() + (mSecs_ * CLOCKS_PER_MSEC);
 }
 
 Timer::Timer(int tMSecs)
@@ -35,7 +35,7 @@ bool Timer::finished()
     return false;
 }
 
-void Timer::start(int sMSecs)
+void Timer::start(int mSecs_)
 {
     // Start
 
@@ -45,10 +45,10 @@ void Timer::start(int sMSecs)
     startTime = clock();
 
     // MSecs
-    mSecs = sMSecs;
+    mSecs = mSecs_;
 
     // Out time
-    outTime = timer(sMSecs);
+    outTime = timer(mSecs_);
 }
 
 void Timer::restart()
@@ -66,4 +66,47 @@ void Timer::stop()
 
     // Out time
     outTime = clock();
+}
+
+// --------------------------- Encapsulation ---------------------------
+
+// MSecs
+
+int Timer::getMSecs()
+{
+    // Get
+    return mSecs;
+}
+void Timer::setMSecs(int mSecs_)
+{
+    // Set
+    mSecs = mSecs_;
+}
+
+// Times
+
+// Start
+
+clock_t Timer::getStartTime()
+{
+    // Get
+    return startTime;
+}
+void Timer::setStartTime(clock_t startTime_)
+{
+    // Set
+    startTime = startTime_;
+}
+
+// Out
+
+clock_t Timer::getOutTime()
+{
+    // Get
+    return outTime;
+}
+void Timer::setOutTime(clock_t outTime_)
+{
+    // Set
+    outTime = outTime_;
 }

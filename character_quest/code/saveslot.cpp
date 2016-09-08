@@ -1,12 +1,12 @@
 #include "saveslot.h"
 
-SaveSlot::SaveSlot(GMapWorld *sGMap, string sPlayerName)
+SaveSlot::SaveSlot(GMapWorld *gMapWorld_, string playerName_)
 {
     // GMap
-    gMap = *sGMap;
+    gMap = *gMapWorld_;
 
     // Player name
-    playerName = sPlayerName;
+    playerName = playerName_;
 }
 
 bool SaveSlot::saved()
@@ -21,4 +21,20 @@ bool SaveSlot::is_empty()
     // Empty
 
     return gMap.is_empty();
+}
+
+// --------------------------- Encapsulation ---------------------------
+
+// Player name
+
+string SaveSlot::getPlayerName()
+{
+    // Get
+    return playerName;
+}
+
+void SaveSlot::setPlayerName(string playerName_)
+{
+    // Set
+    playerName = playerName_;
 }

@@ -15,6 +15,7 @@
 #include "scene.h"
 #include "pushmessage.h"
 #include "ncursesall.h"
+#include "rect.h"
 
 #ifdef WINDOWS
     #include "windows.h"
@@ -43,7 +44,7 @@ void update();
 float cpu;
 
 // Clear screen
-void cls(int x = 0, int y = 0, int w = scrWidth(), int h = scrHeight());
+void cls(int x_, int y_, int width_, int height_);
 
 // Old Width / Height
 int scrOldWidth;
@@ -54,7 +55,7 @@ int keyStroke;
 char keyChar;
 
 // Commands
-void keysCommand(int keyStroke);
+void keysCommand(int keyStroke_);
 
 // --------------------------- Scenes ---------------------------
 
@@ -63,10 +64,10 @@ void keysCommand(int keyStroke);
 Scene *selectedScene;
 
 // Set
-void setScene(Scene *sScene);
+void setScene(Scene *scene_);
 
 // Draw
-void drawScene(Scene *dScene = selectedScene);
+void drawScene(Scene *scene_);
 
 // --------------------------- Scenes values / voids ---------------------------
 
@@ -80,8 +81,8 @@ bool deleteSave;
 void movePlayer(int direction);
 
 // Save / Read saves (saves, game)
-void saveSaves(string sFileName = "save.txt");
-void loadSaves(string rFileName = "save.txt");
+void saveSaves(string fileName_ = "save.txt");
+void loadSaves(string fileName_ = "save.txt");
 
 // --------------------------- Messages ---------------------------
 
@@ -117,13 +118,18 @@ int selectedSaveSlot;
 
 // View size
 
+// Game
+
 // Coords
-const int gMapX = 0;
-const int gMapY = 0;
+const int gameRectX = 0;
+const int gameRectY = 0;
 
 // Size
-const int gMapWidth = 80;
-const int gMapHeight = 24;
+const int gameRectWidth = 80;
+const int gameRectHeight = 24;
+
+// Rect
+const Rect gameRect = Rect(Coord(gameRectX, gameRectY), gameRectWidth, gameRectHeight);
 
 // --------------------------- Biomes ---------------------------
 

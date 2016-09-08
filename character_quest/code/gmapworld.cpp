@@ -1,113 +1,83 @@
 #include "gmapworld.h"
 
-GMapWorld::GMapWorld(Biome *gBiome, GMapHome *gMapHome)
-    : GMap(gBiome)
+GMapWorld::GMapWorld(Biome *biome_, GMapHome *emptyGMapHome_)
+    : GMap(biome_)
 {
     // Emty home
-    emptyGMapHome = gMapHome;
+    emptyGMapHome = emptyGMapHome_;
 }
 
-bool GMapWorld::findGMapHome(int sX, int sY)
+bool GMapWorld::findGMapHome(int x_, int y_)
 {
     // Find
 
-    return gMapHome.find(sX) != gMapHome.end() &&
-            gMapHome[sX].find(sY) != gMapHome[sX].end();
+    return gMapHome.find(x_) != gMapHome.end() &&
+            gMapHome[x_].find(y_) != gMapHome[x_].end();
 }
 
-void GMapWorld::draw(int dX, int dY, int dW, int dH, bool gen)
+void GMapWorld::draw(Rect rect_, bool generate_)
 {
     // Draw
 
-    if(findGMapHome(getPlayerX(), getPlayerY()))
+    if(findGMapHome(getPlayerX(), getPlayerY()) &&
+            gMapHome[getPlayerX()][getPlayerY()]->getEntered())
     {
         // Home
-        gMapHome[getPlayerX()][getPlayerY()]->draw(dX, dY, dW, dH, gen);
+        gMapHome[getPlayerX()][getPlayerY()]->draw(rect_, generate_);
     }
     else
     {
         // World
-        GMap::draw(dX, dY, dW, dH, gen);
+        GMap::draw(rect_, generate_);
     }
 }
 
-GMapSlot *GMapWorld::movePlayer(int mX, int mY)
+pair<bool, GMapSlot *> GMapWorld::movePlayer(int changeX_, int changeY_)
 {
     // Move player
 
-    GMapSlot *gotoSlot;
+    pair<bool, GMapSlot*> returnPair;
 
-    if(findGMapHome(getPlayerX(), getPlayerY()))
+    if(findGMapHome(getPlayerX(), getPlayerY()) &&
+            gMapHome[getPlayerX()][getPlayerY()]->getEntered())
     {
         // In home
 
-        gotoSlot = gMapHome[getPlayerX()][getPlayerY()]->movePlayer(mX, mY);
+        returnPair = gMapHome[getPlayerX()][getPlayerY()]->movePlayer(changeX_, changeY_);
     }
     else
     {
         // In world
 
-        gotoSlot = GMap::movePlayer(mX, mY);
+        returnPair = GMap::movePlayer(changeX_, changeY_);
 
         // Check home
-        if(!gotoSlot->is_free())
+        if(!returnPair.second->is_free())
         {
-            if(!findGMapHome(getPlayerX() + mX, getPlayerY() + mY))
+            // Check
+            for(auto mHomeType: biome->catDynamic["homes"]->object)
             {
-                // Check
-                for(auto mHomeType: getBiome()->getCatDynamic()["homes"]->getObject())
+                if(returnPair.second->getDynamicType() == mHomeType.second->getType())
                 {
-                    if(gotoSlot->getDynamicType() == mHomeType.second->getType())
+                    if(!findGMapHome(getPlayerX() + changeX_, getPlayerY() + changeY_))
                     {
                         // Generate home
-                        gMapHome[getPlayerX() + mX][getPlayerY() + mY] = emptyGMapHome;
-
-                        // Set player coords to home
-                        setPlayerX(getPlayerX() + mX);
-                        setPlayerY(getPlayerY() + mY);
+                        gMapHome[getPlayerX() + changeX_][getPlayerY() + changeY_] = emptyGMapHome;
                     }
+
+                    // Set player coords to home
+                    setPlayerX(getPlayerX() + changeX_);
+                    setPlayerY(getPlayerY() + changeY_);
+
+                    // Enter home
+                    gMapHome[getPlayerX()][getPlayerY()]->setEntered(true);
+
+                    // Not solid slot
+                    returnPair.first = true;
                 }
             }
         }
     }
 
-    return gotoSlot;
-}
-
-// --------------------------- Values ---------------------------
-
-// Homes
-
-map<int, map<int, GMapHome *> > GMapWorld::getGMapHome()
-{
-    // Get
-    return gMapHome;
-}
-void GMapWorld::setGMapHome(map<int, map<int, GMapHome *> > gMapHome_)
-{
-    // Set map
-    gMapHome = gMapHome_;
-}
-void GMapWorld::setGMapHomeX(int x_, map<int, GMapHome *> gMapHome_)
-{
-    // Set x map
-    gMapHome[x_] = gMapHome_;
-}
-void GMapWorld::setGMapHomeY(int x_, int y_, GMapHome *gMapHome_)
-{
-    // Set GMapHome
-    gMapHome[x_][y_] = gMapHome_;
-}
-
-// Empty GMapHome
-
-GMapHome *GMapWorld::getEmptyGMapHome()
-{
-    // Get
-    return emptyGMapHome;
-}
-void GMapWorld::setEmptyGMapHome(GMapHome *emptyGMapHome_)
-{
-    // Set
-    emptyGMapHome = emptyGMapHome_;
+    return returnPair;
 }

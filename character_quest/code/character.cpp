@@ -19,10 +19,10 @@ Character::Character(char imageNatural_, int widthSmall_, int heightSmall_, vect
     setHeightBig(heightBig_);
 
     // Images
-    setImageSmall(imageSmall_);
-    setImageNormal(imageNormal_);
-    setImageBig(imageBig_);
-    setImageNatural(imageNatural_);
+    imageSmall = imageSmall_;
+    imageNormal = imageNormal_;
+    imageBig = imageBig_;
+    imageNatural = imageNatural_;
 }
 
 int Character::width(string cSize)
@@ -91,15 +91,15 @@ void Character::draw(int dX, int dY, string size)
         // Set
         if(size == "small")
         {
-            dImage = getImageSmall();
+            dImage = imageSmall;
         }
         else if(size == "normal")
         {
-            dImage = getImageNormal();
+            dImage = imageNormal;
         }
         else if(size == "big")
         {
-            dImage = getImageBig();
+            dImage = imageBig;
         }
 
         // Draw
@@ -126,50 +126,9 @@ void Character::draw(int dX, int dY, string size)
     }
 }
 
-// --------------------------- Values ---------------------------
+// --------------------------- Encapsulation ---------------------------
 
-// -------------------------- Images --------------------------
-
-// Small
-
-vector<string> Character::getImageSmall()
-{
-    // Get
-    return imageSmall;
-}
-void Character::setImageSmall(vector<string> imageSmall_)
-{
-    // Set
-    imageSmall = imageSmall_;
-}
-
-// Normal
-
-vector<string> Character::getImageNormal()
-{
-    // Get
-    return imageNormal;
-}
-void Character::setImageNormal(vector<string> imageNormal_)
-{
-    // Set
-    imageNormal = imageNormal_;
-}
-
-// Big
-
-vector<string> Character::getImageBig()
-{
-    // Get
-    return imageBig;
-}
-void Character::setImageBig(vector<string> imageBig_)
-{
-    // Set
-    imageBig = imageBig_;
-}
-
-// Natural
+// Natural image
 
 char Character::getImageNatural()
 {

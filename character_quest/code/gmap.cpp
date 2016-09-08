@@ -11,7 +11,7 @@ GMap::GMap(Biome *biome_)
     // Map
 
     // Biome
-    setBiome(biome_);
+    biome = biome_;
 
     // Saved
     setSaved(true);
@@ -28,14 +28,14 @@ GMap::~GMap()
 
 // Camera coords
 
-int GMap::cameraX(int viewW)
+int GMap::cameraX(int gameWidth_)
 {
-    return playerX - viewW/2;
+    return playerX - gameWidth_/2;
 }
 
-int GMap::cameraY(int viewH)
+int GMap::cameraY(int gameHeight_)
 {
-    return playerY - viewH/2;
+    return playerY - gameHeight_/2;
 }
 
 // From map to screen coords
@@ -49,15 +49,25 @@ int GMap::toScrY(int mY, int viewH, int indentY)
     return indentY - cameraY(viewH) + mY;
 }
 
-// From screen to map coords
+// From screen to map coord
 
-int GMap::toMapX(int sX, int viewW, int indentX)
+Coord GMap::toMapCoord(Coord coord_, Rect gameRect_ )
 {
-    return sX - indentX + cameraX(viewW);
+    return Coord(toMapX(coord_.getX(), gameRect_.coord.getX(), gameRect_.getWidth()),
+                        toMapY(coord_.getY(), gameRect_.coord.getY(), gameRect_.getHeight()));
 }
-int GMap::toMapY(int sY, int viewH, int indentY)
+
+int GMap::toMapX(int x_, int gameX_, int gameWidth_)
 {
-    return sY - indentY + cameraY(viewH);
+    // X
+
+    return x_ - gameX_ + cameraX(gameWidth_);
+}
+int GMap::toMapY(int y_, int gameY_, int gameHeight_)
+{
+    // Y
+
+    return y_ - gameY_ + cameraY(gameHeight_);
 }
 
 bool GMap::is_empty()
@@ -85,29 +95,29 @@ GMapSlot *GMap::generateSlot()
     return gSlot;
 }
 
-void GMap::draw(int dX, int dY, int dW, int dH, bool gen)
+void GMap::draw(Rect drawRect_, bool generate_)
 {
     // Draw
 
     // Generate
-    if(gen)
-        generate(dW, dH);
+    if(generate_)
+        generate(drawRect_.getWidth(), drawRect_.getHeight());
 
     // Draw
 
     // Map
-    for(int mX = 0; mX < alignW(dW); mX++)
+    for(int mX = 0; mX < alignX(drawRect_.getWidth()); mX++)
     {
         // X
-        int x = cameraX(alignW(dW)) + mX;
+        int x = cameraX(alignX(drawRect_.getWidth())) + mX;
 
-        for(int mY = 0; mY < alignH(dH); mY++)
+        for(int mY = 0; mY < alignY(drawRect_.getHeight()); mY++)
         {
             // Y
-            int y = cameraY(alignH(dH)) + mY;
+            int y = cameraY(alignY(drawRect_.getHeight())) + mY;
 
             // Draw
-            move(alignH(dY) + mY, alignW(dX) + mX);
+            move(alignY(drawRect_.coord.getY()) + mY, alignX(drawRect_.coord.getY()) + mX);
             if(slot[x][y]->getDynamicType() == ' ')
             {
                 addch(slot[x][y]->getStaticType());
@@ -120,8 +130,8 @@ void GMap::draw(int dX, int dY, int dW, int dH, bool gen)
     }
 
     // Player
-    move(toScrY(playerY, alignH(dH), alignH(dY)),
-         toScrX(playerX, alignW(dW), alignW(dX)));
+    move(toScrY(playerY, alignY(drawRect_.getHeight()), alignY(drawRect_.coord.getY())),
+         toScrX(playerX, alignX(drawRect_.getWidth()), alignX(drawRect_.coord.getX())));
     printw("T");
 }
 
@@ -129,15 +139,15 @@ void GMap::generate(int dW, int dH)
 {
     // Generate slots
 
-    for(int mX = 0; mX < alignW(dW); mX++)
+    for(int mX = 0; mX < alignX(dW); mX++)
     {
         // X
-        int gX = cameraX(alignW(dW)) + mX;
+        int gX = cameraX(alignX(dW)) + mX;
 
-        for(int mY = 0; mY < alignH(dH); mY++)
+        for(int mY = 0; mY < alignY(dH); mY++)
         {
             // Y
-            int gY = cameraY(alignH(dH)) + mY;
+            int gY = cameraY(alignY(dH)) + mY;
 
             // Generate
             if( slot.find(gX) == slot.end() ||
@@ -149,76 +159,55 @@ void GMap::generate(int dW, int dH)
     }
 }
 
-GMapSlot *GMap::movePlayer(int mX, int mY)
+pair<bool, GMapSlot *> GMap::movePlayer(int changeX_, int changeY_)
 {
     // Move player
 
-    GMapSlot *gotoSlot = slot[playerX + mX][playerY + mY];
+    GMapSlot *gotoSlot = slot[playerX + changeX_][playerY + changeY_];
+
+    pair<bool, GMapSlot *> returnPair = { gotoSlot->is_free(), gotoSlot };
 
     if(gotoSlot->is_free())
     {
         // Move
-        playerX += mX;
-        playerY += mY;
+        playerX += changeX_;
+        playerY += changeY_;
 
         saved = false;
     }
 
-    return gotoSlot;
+    return returnPair;
 }
 
-GMapSlot *GMap::movePlayerUp()
+pair<bool, GMapSlot *> GMap::movePlayerUp()
 {
     // Move Player Up
 
     return movePlayer(0, -1);
 }
 
-GMapSlot *GMap::movePlayerDown()
+pair<bool, GMapSlot *> GMap::movePlayerDown()
 {
     // Move player down
 
     return movePlayer(0, 1);
 }
 
-GMapSlot *GMap::movePlayerLeft()
+pair<bool, GMapSlot *> GMap::movePlayerLeft()
 {
     // Move player left
 
     return movePlayer(-1, 0);
 }
 
-GMapSlot *GMap::movePlayerRight()
+pair<bool, GMapSlot *> GMap::movePlayerRight()
 {
     // Move player right
 
     return movePlayer(1, 0);
 }
 
-// --------------------------- Values ---------------------------
-
-// Slot
-
-map<int, map<int, GMapSlot *> > GMap::getSlot()
-{
-    // Get
-    return slot;
-}
-void GMap::setSlotX(map<int, map<int, GMapSlot *> > slot_)
-{
-    // Set Map X
-    slot = slot_;
-}
-void GMap::setSlotY(int x_, map<int, GMapSlot *> slot_)
-{
-    // Set Map Y
-    slot[x_] = slot_;
-}
-void GMap::setSlot(int x_, int y_, GMapSlot *slot_)
-{
-    // Set Slot
-    slot[x_][y_] = slot_;
-}
+// --------------------------- Encapsulation ---------------------------
 
 // Player
 
@@ -246,19 +235,6 @@ void GMap::setPlayerY(int playerY_)
 {
     // Set
     playerY = playerY_;
-}
-
-// Biome
-
-Biome *GMap::getBiome()
-{
-    // Get
-    return biome;
-}
-void GMap::setBiome(Biome *biome_)
-{
-    // Set
-    biome = biome_;
 }
 
 // Saved

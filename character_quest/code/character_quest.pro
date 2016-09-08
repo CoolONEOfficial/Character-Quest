@@ -24,7 +24,6 @@ TARGET = Character_Quest
 
 # Files
 SOURCES += main.cpp \
-    bcat.cpp \
     biome.cpp \
     bobj.cpp \
     button.cpp \
@@ -32,16 +31,19 @@ SOURCES += main.cpp \
     font.cpp \
     gmapslot.cpp \
     label.cpp \
-    message.cpp \
     rands.cpp \
     scene.cpp \
     screen.cpp \
     text.cpp \
     timer.cpp \
-    saveslot.cpp \
+    coord.cpp \
     gmap.cpp \
+    gmaphome.cpp \
     gmapworld.cpp \
-    gmaphome.cpp
+    rect.cpp \
+    saveslot.cpp \
+    bobjcat.cpp \
+    pushmessage.cpp
 
 HEADERS += \
     biome.h \
@@ -65,10 +67,12 @@ HEADERS += \
     screen.h \
     text.h \
     timer.h \
-    saveslot.h \
+    coord.h \
     gmap.h \
+    gmaphome.h \
     gmapworld.h \
-    gmaphome.h
+    rect.h \
+    saveslot.h
 
 # NCurses lib
 
@@ -111,3 +115,7 @@ win32 {
 
 # Icon
 win32:RC_FILE = resource.rc
+
+DISTFILES += \
+    icon.ico \
+    resource.rc

@@ -5,6 +5,8 @@
 #include "gmapslot.h"
 #include "screen.h"
 #include "biome.h"
+#include "coord.h"
+#include "rect.h"
 
 #include <ncursesall.h>
 #include <map>
@@ -17,45 +19,55 @@ using namespace std;
 class GMap
 {
 public:
-    GMap(Biome* biome_ = new Biome());
+    explicit GMap(Biome* biome_ = new Biome());
     ~GMap();
 
+private:
+    // Player coords
+    int playerX;
+    int playerY;
+
+    // Saved
+    bool saved;
+public:
+
+    // Biome
+    Biome* biome;
+
+    // Slots
+    map < int, map< int, GMapSlot*> > slot;
+
     // Draw
-    virtual void draw(int dX, int dY, int dW, int dH, bool gen = true);
+    virtual void draw(Rect drawRect_, bool generate_ = true);
 
     // Generate
     virtual void generate(int dW, int dH);
     GMapSlot* generateSlot();
+
+    // Camera coords
+    int cameraX(int gameWidth_);
+    int cameraY(int gameHeight_);
 
     // From map to screen coords
     int toScrX(int mX, int viewW, int indentX);
     int toScrY(int mY, int viewH, int indentY);
 
     // From screen to map coords
-    int toMapX(int sX, int viewW, int indentX);
-    int toMapY(int sY, int viewH, int indentY);
-
-    // Camera coords
-    int cameraX(int viewW);
-    int cameraY(int viewH);
+    Coord toMapCoord(Coord coord_, Rect gameRect_);
+    int toMapX(int x_, int gameX_, int gameWidth_);
+    int toMapY(int y_, int gameY_, int gameHeight_);
 
     // Move player
-    virtual GMapSlot* movePlayer(int mX, int mY);
-    GMapSlot* movePlayerUp();
-    GMapSlot* movePlayerDown();
-    GMapSlot* movePlayerLeft();
-    GMapSlot* movePlayerRight();
+    virtual pair<bool, GMapSlot*> movePlayer(int changeX_, int changeY_);
+    pair<bool, GMapSlot*> movePlayerUp();
+    pair<bool, GMapSlot*> movePlayerDown();
+    pair<bool, GMapSlot*> movePlayerLeft();
+    pair<bool, GMapSlot*> movePlayerRight();
 
     // Empty
     bool is_empty();
 
-    // --------------------------- Values ---------------------------
-
-    // Slots
-    map < int, map< int, GMapSlot*> > getSlot();
-    void setSlotX(map < int, map< int, GMapSlot*> > slot_);
-    void setSlotY(int x_, map< int, GMapSlot*> slot_);
-    void setSlot(int x_, int y_, GMapSlot* slot_);
+    // --------------------------- Encapsulation ---------------------------
 
     // Player coords
 
@@ -67,31 +79,9 @@ public:
     int getPlayerY();
     void setPlayerY(int playerY_);
 
-    // Biome
-    Biome *getBiome();
-    void setBiome(Biome* biome_);
-
     // Saved
     bool getSaved();
     void setSaved(bool saved_);
-
-private:
-    // Slots
-    map < int, map< int, GMapSlot*> > slot;
-
-    // Player coords
-
-    // X
-    int playerX;
-
-    // Y
-    int playerY;
-
-    // Biome
-    Biome* biome;
-
-    // Saved
-    bool saved;
 };
 
 #endif // _FILE_GMAP_

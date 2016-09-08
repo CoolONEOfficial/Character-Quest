@@ -14,33 +14,42 @@ using namespace std;
 class Character
 {
 public:
-    Character(char imageNatural_ = '.',
-              int widthSmall_ = 4, int heightSmall_ = 5, vector<string> imageSmall_ = {""},
-              int widthNormal_ = 6, int heightNormal_ = 8, vector<string> imageNormal_ = {""},
-              int widthBig_ = 8, int heightBig_ = 10, vector<string> imageBig_ = {""});
+    explicit Character(char imageNatural_ = '.',
+                              int widthSmall_ = 4, int heightSmall_ = 5, vector<string> imageSmall_ = {""},
+                              int widthNormal_ = 6, int heightNormal_ = 8, vector<string> imageNormal_ = {""},
+                              int widthBig_ = 8, int heightBig_ = 10, vector<string> imageBig_ = {""});
 
     // Draw
     void draw(int dX, int dY, string size);
 
-    // Size
+    // Images
+    vector<string> imageSmall;
+    vector<string> imageNormal;
+    vector<string> imageBig;
+private:
+    char imageNatural;
+public:
+
+    // Sizes
+
     int width(string cSize);
     int height(string cSize);
 
-    // --------------------------- Values ---------------------------
-
-    // -------------------------- Images --------------------------
-
+private:
     // Small
-    vector<string> getImageSmall();
-    void setImageSmall(vector<string> imageSmall_);
+    int widthSmall;
+    int heightSmall;
 
     // Normal
-    vector<string> getImageNormal();
-    void setImageNormal(vector<string> imageNormal_);
+    int widthNormal;
+    int heightNormal;
 
     // Big
-    vector<string> getImageBig();
-    void setImageBig(vector<string> imageBig_);
+    int widthBig;
+    int heightBig;
+public:
+
+    // --------------------------- Encapsulation ---------------------------
 
     // Natural
     char getImageNatural();
@@ -65,35 +74,6 @@ public:
     void setWidthBig(int widthBig_);
     int getHeightBig();
     void setHeightBig(int heightBig_);
-
-private:
-    // -------------------------- Images --------------------------
-
-    // Small
-    vector<string> imageSmall;
-
-    // Normal
-    vector<string> imageNormal;
-
-    // Big
-    vector<string> imageBig;
-
-    // Natural
-    char imageNatural;
-
-    // -------------------------- Sizes --------------------------
-
-    // Small
-    int widthSmall;
-    int heightSmall;
-
-    // Normal
-    int widthNormal;
-    int heightNormal;
-
-    // Big
-    int widthBig;
-    int heightBig;
 };
 
 #endif // _FILE_CHARACTER_
