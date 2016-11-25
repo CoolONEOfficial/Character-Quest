@@ -7,35 +7,39 @@
 
 // --------------------------- Timer ---------------------------
 
-clock_t timer(int mSecs_);
+clock_t timer(int time_);
+
+clock_t toClocks(int mSecs_);
+clock_t toMSecs(int clocks_);
 
 class Timer
 {
 public:
-    explicit Timer(int tMSecs = 2000);
+    explicit Timer(int duration_ = 2000, bool started_ = false);
 
 private:
     // Times
     clock_t startTime;
-    clock_t outTime;
+    clock_t endTime;
+    clock_t pastTime;
+    clock_t remTime;
 
-    // MSecs
-    int mSecs;
+    // Duration
+    clock_t duration;
+
+    // Started
+    bool started;
 public:
 
-    bool started();
+    // Finished
     bool finished();
 
     // Control
-    void start(int mSecs_);
-    void restart();
+    void start();
+    void pause();
     void stop();
 
     // --------------------------- Encapsulation ---------------------------
-
-    // MSecs
-    int getMSecs();
-    void setMSecs(int mSecs_);
 
     // Times
 
@@ -44,8 +48,24 @@ public:
     void setStartTime(clock_t startTime_);
 
     // Out
-    clock_t getOutTime();
-    void setOutTime(clock_t outTime_);
+    clock_t getEndTime();
+    void setEndTime(clock_t endTime_);
+
+    // Past time
+    clock_t getPastTime();
+    void setPastTime(clock_t pastTime_);
+
+    // Remaining time
+    clock_t getRemTime();
+    void setRemTime(clock_t remTime_);
+
+    // Duration
+    clock_t getDuration();
+    void setDuration(clock_t duration_);
+
+    // Started
+    bool getStarted();
+    void setStarted(bool started_);
 };
 
 #endif // _FILE_TIMER_

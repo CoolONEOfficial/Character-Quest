@@ -4,7 +4,8 @@
 #include "savedelete.h"
 #include "screen.h"
 #include "button.h"
-#include "label.h"
+#include "animationlabel.h"
+#include "rect.h"
 
 #include <string>
 #include <vector>
@@ -16,26 +17,33 @@ using namespace std;
 class Scene
 {
 public:
-    explicit Scene(vector <Label*> labels_ = {}, vector <Button*> buttons_ = {},
-                         bool alignButtonX_ = false, int buttonY_ = screenHeightDefault/2, int alignButtonsY_ = false, int buttonX_ = screenWidthDefault/2);
+    explicit Scene(vector <AnimationLabel*> labels_ = {}, vector <Button*> buttons_ = {}, WINDOW* screen_ = new WINDOW(),
+                         bool alignButtonsX_ = false, int buttonY_ = screenHeightDefault/2,
+                         bool alignButtonsY_ = false, int buttonX_ = screenWidthDefault/2);
     Scene(const Scene *&scene_);
-    ~Scene();
+    virtual ~Scene();
 
     // Buttons
     vector <Button*> button;
     map <string, int> buttonId;
 
     // Labels
-    vector <Label*> label;
+    vector <AnimationLabel*> label;
+
+    // Screen
+    WINDOW* screen;
+    float alignX(float x_);
+    float alignY(float y_);
+    void initScreen(WINDOW *screen_);
 
     // Draw
-    void draw(int selectedButton_, Rect *screen_);
+    void draw(int selectedButton_);
 
     // Buttons
-    void drawButtons(int selectedButton_, Rect* screen_);
+    void drawButtons(int selectedButton_);
 
     // Labels
-    void drawLabels(Rect *screen_);
+    void drawLabels();
 
     // Add button
     void addButton(Button *button_);

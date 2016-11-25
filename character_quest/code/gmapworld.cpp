@@ -15,7 +15,7 @@ bool GMapWorld::findGMapHome(int x_, int y_)
             gMapHome[x_].find(y_) != gMapHome[x_].end();
 }
 
-void GMapWorld::draw(Rect rect_, bool generate_)
+void GMapWorld::draw(Rect<ScreenCoord> rect_, bool generate_)
 {
     // Draw
 

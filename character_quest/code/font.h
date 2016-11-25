@@ -13,12 +13,23 @@ using namespace std;
 class Font
 {
 public:
-    explicit Font(map <char, Character*> image_ = {});
+    explicit Font(map <char, Character*> image_ = {}, int indent_ = 2);
     Font(const Font *&font_);
     ~Font();
 
     // Images
     map <char, Character*> image;
+
+    // Indent
+private:
+    int indent;
+public:
+
+    // --------------------------- Encapsulation ---------------------------
+
+    // Indent
+    int getIndent();
+    void setIndent(int indent_);
 };
 
 #endif // _FILE_FONT_

@@ -1,7 +1,10 @@
 #include "gmap.h"
 
-GMap::GMap(Biome *biome_)
+GMap::GMap(Biome *biome_, WINDOW *screen_)
 {
+    // Screen
+    initScreen(screen_);
+
     // Player
 
     // Coords
@@ -40,21 +43,21 @@ int GMap::cameraY(int gameHeight_)
 
 // From map to screen coords
 
-int GMap::toScrX(int mX, int viewW, int indentX)
+int GMap::toScreenX(int x_, int gameWidth_, int indentX_)
 {
-    return indentX - cameraX(viewW) + mX;
+    return indentX_ - cameraX(gameWidth_) + x_;
 }
-int GMap::toScrY(int mY, int viewH, int indentY)
+int GMap::toScreenY(int y_, int gameHeight_, int indentY_)
 {
-    return indentY - cameraY(viewH) + mY;
+    return indentY_ - cameraY(gameHeight_) + y_;
 }
 
 // From screen to map coord
 
-Coord GMap::toMapCoord(Coord coord_, Rect gameRect_ )
+Coord GMap::toMapCoord(Coord coord_, Rect<Coord> gameRect_ )
 {
-    return Coord(toMapX(coord_.getX(), gameRect_.coord.getX(), gameRect_.getWidth()),
-                        toMapY(coord_.getY(), gameRect_.coord.getY(), gameRect_.getHeight()));
+    return Coord(toMapX(coord_.getX(), gameRect_.coordFirst.getX(), gameRect_.width()),
+                        toMapY(coord_.getY(), gameRect_.coordFirst.getY(), gameRect_.height()));
 }
 
 int GMap::toMapX(int x_, int gameX_, int gameWidth_)
@@ -95,29 +98,54 @@ GMapSlot *GMap::generateSlot()
     return gSlot;
 }
 
-void GMap::draw(Rect drawRect_, bool generate_)
+float GMap::alignX(float x_)
+{
+    // Align X
+
+    return ::alignX(x_, screen);
+}
+
+float GMap::alignY(float y_)
+{
+    // Align Y
+
+    return ::alignY(y_, screen);
+}
+
+void GMap::initScreen(WINDOW *screen_)
+{
+    // Init screen
+
+    if(screen_ != new WINDOW())
+    {
+        screen_ = screen_;
+    }
+}
+
+void GMap::draw(Rect<ScreenCoord> drawRect_, bool generate_)
 {
     // Draw
 
     // Generate
     if(generate_)
-        generate(drawRect_.getWidth(), drawRect_.getHeight());
+        generate(drawRect_);
 
     // Draw
 
     // Map
-    for(int mX = 0; mX < alignX(drawRect_.getWidth()); mX++)
+    for(int mX = 0; mX < drawRect_.width(); mX++)
     {
         // X
-        int x = cameraX(alignX(drawRect_.getWidth())) + mX;
+        int x = cameraX(drawRect_.width()) + mX;
 
-        for(int mY = 0; mY < alignY(drawRect_.getHeight()); mY++)
+        for(int mY = 0; mY < drawRect_.height(); mY++)
         {
             // Y
-            int y = cameraY(alignY(drawRect_.getHeight())) + mY;
+            int y = cameraY(drawRect_.height()) + mY;
 
             // Draw
-            move(alignY(drawRect_.coord.getY()) + mY, alignX(drawRect_.coord.getY()) + mX);
+            move(drawRect_.coordFirst.getY() + mY,
+                 drawRect_.coordFirst.getY() + mX);
             if(slot[x][y]->getDynamicType() == ' ')
             {
                 addch(slot[x][y]->getStaticType());
@@ -130,24 +158,24 @@ void GMap::draw(Rect drawRect_, bool generate_)
     }
 
     // Player
-    move(toScrY(playerY, alignY(drawRect_.getHeight()), alignY(drawRect_.coord.getY())),
-         toScrX(playerX, alignX(drawRect_.getWidth()), alignX(drawRect_.coord.getX())));
+    move(toScreenY(playerY, drawRect_.height(), drawRect_.coordFirst.getY()),
+         toScreenX(playerX, drawRect_.width(), drawRect_.coordFirst.getX()));
     printw("T");
 }
 
-void GMap::generate(int dW, int dH)
+void GMap::generate(Rect<ScreenCoord> genRect_)
 {
     // Generate slots
 
-    for(int mX = 0; mX < alignX(dW); mX++)
+    for(int mX = 0; mX < genRect_.width(); mX++)
     {
         // X
-        int gX = cameraX(alignX(dW)) + mX;
+        int gX = cameraX(genRect_.width()) + mX;
 
-        for(int mY = 0; mY < alignY(dH); mY++)
+        for(int mY = 0; mY < genRect_.height(); mY++)
         {
             // Y
-            int gY = cameraY(alignY(dH)) + mY;
+            int gY = cameraY(genRect_.height()) + mY;
 
             // Generate
             if( slot.find(gX) == slot.end() ||

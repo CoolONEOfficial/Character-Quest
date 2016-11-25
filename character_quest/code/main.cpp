@@ -7,6 +7,15 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 #endif
 
+    // On exit
+    atexit(exitEvent);
+
+#ifdef LINUX
+    // Fullscreen
+//    system("wmctrl -r :ACTIVE: -b add,fullscreen");
+    system("wmctrl -r :ACTIVE: -b add,hidden");
+#endif
+
     // Init
     initAll();
 
@@ -34,6 +43,9 @@ int main(int argc, char *argv[])
     setScene(scene["screensaver"]);
 
     // Start Game
+#ifdef LINUX
+    system("wmctrl -r :ACTIVE: -b remove,hidden");
+#endif
 
     cpu = clock();
     do
@@ -50,8 +62,8 @@ int main(int argc, char *argv[])
         }
 
         // Set old Width / Height
-        scrOldWidth = screenWidth();
-        scrOldHeight = screenHeight();
+        scrOldWidth = screenWidth(screen);
+        scrOldHeight = screenHeight(screen);
 
         // Draw
         update();
@@ -260,7 +272,7 @@ void update()
     {
         for(auto mLabel: selectedScene->label)
         {
-            mLabel->animationTact();
+            mLabel->animation.tact();
         }
     }
 
@@ -277,9 +289,13 @@ void update()
 
     // Debug texts
 #ifdef DEBUG
-    move(0,0);
-    if(selectedSaveSlot != -1)
-    printw("x:%i y:%i", saveSlot[selectedSaveSlot]->gMap.getPlayerX(), saveSlot[selectedSaveSlot]->gMap.getPlayerY());
+//    move(0,0);
+//    if(selectedSaveSlot != -1)
+//    printw("x:%i y:%i", saveSlot[selectedSaveSlot]->gMap.getPlayerX(), saveSlot[selectedSaveSlot]->gMap.getPlayerY());
+//    move(1,0);
+//    printw("val:%f", selectedScene->label[0]->animation.getValue());
+//    move(alignY(screenHeightDefault/2, screen), alignX(screenWidthDefault/2, screen));
+//    printw("c");
 #endif
 
     refresh();
@@ -336,7 +352,7 @@ void drawScene(Scene *scene_)
     else if(scene_ == scene["game"])
     {
         // Draw
-        saveSlot[selectedSaveSlot]->gMap.draw(Rect(Coord(gameRectX, gameRectY), gameRectWidth, gameRectHeight));
+        saveSlot[selectedSaveSlot]->gMap.draw(Rect<ScreenCoord>(ScreenCoord(gameRectX, gameRectY, screen), ScreenCoord(gameRectX + gameRectWidth, gameRectX + gameRectHeight, screen)));
     }
 
     // Pause
@@ -347,8 +363,8 @@ void drawScene(Scene *scene_)
         drawScene(scene["game"]);
 
         // Label "Pause"
-        cls(0, 0, screenWidth(), screenHeight() / 3.0);
-        cls(0, screenHeight() / 3.0 * 2.0, screenWidth(), screenHeight());
+        cls(0, 0, screenWidth(screen), screenHeight(screen) / 3.0);
+        cls(0, screenHeight(screen) / 3.0 * 2.0, screenWidth(screen), screenHeight(screen));
     }
 
     // Exit Pause
@@ -361,7 +377,7 @@ void drawScene(Scene *scene_)
     // Draw other scene
     if(scene_ == selectedScene)
     {
-        scene_->draw(selectedButton, screen());
+        scene_->draw(selectedButton);
     }
 }
 
@@ -382,11 +398,11 @@ void setScene(Scene *scene_)
         // Stop all texts animations
         for(auto &mLabel: scene_->label)
         {
-            mLabel->animationStop();
+            mLabel->animation.stop();
         }
 
         // Start first text animation
-        scene_->label[0]->animationStart();
+        scene_->label[0]->animation.start();
     }
 
     // Select button
@@ -404,7 +420,7 @@ void drawMessages()
     {
         if(!message[mMsg]->deleteTimer.finished())
         {
-            move(screenHeight() - 1 - mMsg, 0);
+            move(screenHeight(screen) - 1 - mMsg, 0);
             printw("%s",message[mMsg]->getText().c_str());
         }
         else
@@ -577,8 +593,8 @@ void buttonClick()
                     // First game
 
                     // Clear label
-                    Label *newLabel = scene["savesNew"]->label[1];
-                    newLabel->setText(string());
+                    AnimationLabel *newLabel = scene["savesNew"]->label[1];
+                    newLabel->animation.setEndText(string());
 
                     scene["savesNew"]->label[1] = newLabel;
 
@@ -1015,7 +1031,7 @@ void initAll()
     // --------------------------- Init All ---------------------------
 
     // Init screen
-    initscr();
+    screen = initscr();
 
     // Get keyboard control
     raw();
@@ -1035,11 +1051,14 @@ void initAll()
     // Colors
     start_color();
 
+    // Fonts
+    initFonts();
+
     // Character pairs
     initCharPairs();
 
     // Scenes
-    initScenes();
+    initScenes(screen);
 
     // Biomes
     initBiomes();
@@ -1049,4 +1068,10 @@ void initAll()
     {
         mSave = new SaveSlot(new GMapWorld(biome["forest"], new GMapHome(biome["home"])));
     }
+}
+
+void exitEvent()
+{
+    // Off fullscreen
+    system("wmctrl -r :ACTIVE: -b remove,fullscreen");
 }

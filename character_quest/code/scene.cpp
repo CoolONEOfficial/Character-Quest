@@ -1,6 +1,6 @@
 #include "scene.h"
 
-Scene::Scene(vector<Label *> labels_, vector<Button *> buttons_, bool alignButtonX_, int buttonY_, int alignButtonsY_, int buttonX_)
+Scene::Scene(vector<AnimationLabel *> labels_, vector<Button *> buttons_, WINDOW *screen_, bool alignButtonsX_, int buttonY_, bool alignButtonsY_, int buttonX_)
 {
     // Button
     for(auto mButton: buttons_)
@@ -11,7 +11,8 @@ Scene::Scene(vector<Label *> labels_, vector<Button *> buttons_, bool alignButto
     // Label
     label = labels_;
 
-    if(alignButtonX_)
+    // Align Buttons
+    if(alignButtonsX_)
     {
         alignButtonsX(buttonY_);
     }
@@ -19,6 +20,9 @@ Scene::Scene(vector<Label *> labels_, vector<Button *> buttons_, bool alignButto
     {
         alignButtonsY(buttonX_);
     }
+
+    // Screen
+    initScreen(screen_);
 }
 
 Scene::Scene(const Scene *&scene_)
@@ -35,15 +39,53 @@ Scene::~Scene()
     SAVE_DEL_MAS(label)
 }
 
-void Scene::draw(int selectedButton_, Rect* screen_)
+float Scene::alignX(float x_)
+{
+    // Align X
+
+    return ::alignX(x_, screen);
+}
+
+float Scene::alignY(float y_)
+{
+    // Align Y
+
+    return ::alignY(y_, screen);
+}
+
+void Scene::initScreen(WINDOW *screen_)
+{
+    // Set screen
+
+    if(screen_ != new WINDOW())
+    {
+        screen = screen_;
+
+        // Labels
+        for(auto &mLabel: label)
+        {
+            mLabel->initScreen(screen_);
+        }
+
+        // Buttons
+        for(auto &mButton: button)
+        {
+            mButton->initScreen(screen_);
+        }
+    }
+}
+
+void Scene::draw(int selectedButton_)
 {
     // Draw
 
+    assert(screen != new WINDOW());
+
     // Labels
-    drawLabels(screen_);
+    drawLabels();
 
     // Buttons
-    drawButtons(selectedButton_, screen_);
+    drawButtons(selectedButton_);
 }
 
 void Scene::addButton(Button *button_)
@@ -64,8 +106,8 @@ void Scene::alignButtonsX(int y_)
 
     for(size_t mButton = 0; mButton < button.size(); mButton++)
     {
-        button[mButton]->setX(screenWidthDefault / (button.size()+1) * (mButton+1));
-        button[mButton]->setY(y_);
+        button[mButton]->coord.setX(screenWidthDefault / (button.size()+1) * (mButton+1));
+        button[mButton]->coord.setY(y_);
     }
 }
 
@@ -75,35 +117,35 @@ void Scene::alignButtonsY(int x_)
 
     for(size_t mButton = 0; mButton < button.size(); mButton++)
     {
-        button[mButton]->setX(x_);
-        button[mButton]->setY(screenHeightDefault / (button.size()+1) * (mButton+1));
+        button[mButton]->coord.setX(x_);
+        button[mButton]->coord.setY(screenHeightDefault / (button.size()+1) * (mButton+1));
     }
 }
 
-void Scene::drawButtons(int selectedButton_, Rect* screen_)
+void Scene::drawButtons(int selectedButton_)
 {
     // Draw buttons
 
     if(!button.empty())
     {
         // Deselect all
-        for(size_t mButton = 0; mButton < button.size(); mButton++)
+        for(auto &mButton: button)
         {
-            button[mButton]->setSelected(false);
+            mButton->setSelected(false);
         }
 
         // Select selected
         button[selectedButton_]->setSelected(true);
 
         // Draw
-        for(size_t mButton = 0; mButton < button.size(); mButton++)
+        for(auto mButton: button)
         {
-            button[mButton]->draw(screen_);
+            mButton->draw();
         }
     }
 }
 
-void Scene::drawLabels(Rect* screen_)
+void Scene::drawLabels()
 {
     // Draw labels
 
@@ -112,16 +154,16 @@ void Scene::drawLabels(Rect* screen_)
         // Draw
         for(auto mLabel: label)
         {
-            mLabel->draw(screen_->getWidth(), screen_->getHeight());
+            mLabel->draw();
         }
 
         // Start next if previous finished
         for(size_t mLabel = 0; mLabel < label.size()-1; mLabel++)
         {
-            if(label[mLabel]->animationFinished() &&
-               !label[mLabel+1]->animationStarted())
+            if(label[mLabel]->animation.finished() &&
+               !label[mLabel+1]->animation.started())
             {
-                label[mLabel+1]->animationStart();
+                label[mLabel+1]->animation.start();
             }
         }
     }

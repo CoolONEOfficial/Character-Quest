@@ -1,7 +1,7 @@
 #ifndef _FILE_GMAPSLOT_
 #define _FILE_GMAPSLOT_
 
-#include <ncursesall.h>
+#include "ncursesall.h"
 
 // --------------------------- Game Map Slot ---------------------------
 

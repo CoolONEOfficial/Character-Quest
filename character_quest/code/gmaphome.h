@@ -29,7 +29,7 @@ private:
 public:
 
     // Draw
-    void draw(Rect drawRect_, bool generate_ = true);
+    void draw(Rect<ScreenCoord> drawRect_, bool generate_ = true);
 
     // Generate home
     void generate(int width_, int height_);

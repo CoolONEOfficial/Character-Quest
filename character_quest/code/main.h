@@ -34,8 +34,14 @@ using namespace std;
 
 // --------------------------- Main ---------------------------
 
+// On Exit
+void exitEvent();
+
 // Inits
 void initAll();
+
+// Screen
+WINDOW* screen;
 
 // Update screen
 void update();
@@ -129,7 +135,7 @@ const int gameRectWidth = 80;
 const int gameRectHeight = 24;
 
 // Rect
-const Rect gameRect = Rect(Coord(gameRectX, gameRectY), gameRectWidth, gameRectHeight);
+const Rect<Coord> gameRect = Rect<Coord>(Coord(gameRectX, gameRectY), Coord(gameRectWidth, gameRectHeight));
 
 // --------------------------- Biomes ---------------------------
 

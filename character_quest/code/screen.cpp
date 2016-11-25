@@ -1,34 +1,36 @@
 #include "screen.h"
 
-float screenWidth()
+int screenWidth(WINDOW *screen_)
 {
     // Screen width
 
-    return getmaxx(stdscr);
+    return getmaxx(screen_);
 }
 
-float screenHeight()
+int screenHeight(WINDOW *screen_)
 {
     // Screen height
 
-    return getmaxy(stdscr);
+    return getmaxy(screen_);
 }
 
-int alignX(int val_, int scrWidt_)
+Rect<Coord> screenRect(WINDOW *screen_)
+{
+    // Screen rect
+
+    return Rect<Coord>(Coord(0, 0), Coord(screenWidth(screen_), screenHeight(screen_)));
+}
+
+float alignX(float x_, WINDOW *screen_)
 {
     // Align X
 
-    return (val_ * scrWidt_) / screenWidthDefault;
+    return (x_ * screenWidth(screen_)) / screenWidthDefault;
 }
 
-int alignY(int val_, int scrHeight_)
+float alignY(float y_, WINDOW *screen_)
 {
     // Align Y
 
-    return (val_ * scrHeight_) / screenHeightDefault;
-}
-
-Rect *screen()
-{
-    return new Rect(Coord(), screenWidth(), screenHeight());
+    return (y_ * screenHeight(screen_)) / screenHeightDefault;
 }

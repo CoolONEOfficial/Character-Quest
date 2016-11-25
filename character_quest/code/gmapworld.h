@@ -4,7 +4,6 @@
 #include "gmap.h"
 #include "gmaphome.h"
 #include "rect.h"
-#include "coord.h"
 
 // --------------------------- Game Map World ---------------------------
 
@@ -26,7 +25,7 @@ public:
     bool findGMapHome(int x_, int y_);
 
     // Draw
-    void draw(Rect rect_, bool generate_ = true);
+    void draw(Rect<ScreenCoord> rect_, bool generate_ = true);
 };
 
 #endif // _FILE_GMAPWORLD_

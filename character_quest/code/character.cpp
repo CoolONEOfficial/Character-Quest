@@ -77,11 +77,11 @@ int Character::height(string cSize)
     exit(EXIT_FAILURE);
 }
 
-void Character::draw(int dX, int dY, string size)
+void Character::draw(int x_, int y_, string size_)
 {
     // Draw char
 
-    if(size != "natural")
+    if(size_ != "natural")
     {
         // Draw image
 
@@ -89,15 +89,15 @@ void Character::draw(int dX, int dY, string size)
         vector <string> dImage;
 
         // Set
-        if(size == "small")
+        if(size_ == "small")
         {
             dImage = imageSmall;
         }
-        else if(size == "normal")
+        else if(size_ == "normal")
         {
             dImage = imageNormal;
         }
-        else if(size == "big")
+        else if(size_ == "big")
         {
             dImage = imageBig;
         }
@@ -110,7 +110,7 @@ void Character::draw(int dX, int dY, string size)
                 if(dImage[mY][f] != ' ')
                 {
                     // Move
-                    move(dY + mY, dX + f);
+                    move(y_ + mY, x_ + f);
 
                     // Draw char
                     printw("%c",dImage[mY].c_str()[f]);
@@ -121,7 +121,7 @@ void Character::draw(int dX, int dY, string size)
     else
     {
         // Draw natural size
-        move(dY, dX);
+        move(y_, x_);
         printw("%c", getImageNatural());
     }
 }

@@ -1,87 +1,89 @@
 #include "timer.h"
 
-clock_t timer(int mSecs_)
+clock_t timer(int time_)
 {
     // Get timer
 
-    return clock() + (mSecs_ * CLOCKS_PER_MSEC);
+    return clock() + toClocks(time_);
 }
 
-Timer::Timer(int tMSecs)
+clock_t toClocks(int mSecs_)
 {
+    // Tp clocks
+
+    return mSecs_ * CLOCKS_PER_MSEC;
+}
+
+clock_t toMSecs(int clocks_)
+{
+    // To mSecs
+
+    return clocks_ / CLOCKS_PER_MSEC;
+}
+
+Timer::Timer(int duration_, bool started_)
+{
+    // Times
+
     // Start
-    start(tMSecs);
-}
+    setStartTime(clock());
 
-bool Timer::started()
-{
-    // Started
+    // Past
+    setPastTime(0);
 
-    if(clock() > startTime)
-    {
-        return true;
-    }
-    return false;
+    // End
+    setEndTime(timer(duration_));
+
+    // Remaining
+    setRemTime(duration_);
+
+    // Duration
+    setDuration(duration_);
+
+    // Start / Stop
+    setStarted(started_);
 }
 
 bool Timer::finished()
 {
     // Finished
 
-    if(clock() >= outTime)
-    {
-        return true;
-    }
-    return false;
+    return clock() > getEndTime();
 }
 
-void Timer::start(int mSecs_)
+void Timer::start()
 {
     // Start
 
-    // Set
-
-    // Start time
-    startTime = clock();
-
-    // MSecs
-    mSecs = mSecs_;
-
-    // Out time
-    outTime = timer(mSecs_);
+    if(!started)
+    {
+        // Start
+        setStarted(true);
+        setStartTime(clock() - pastTime);
+        setEndTime(timer(remTime));
+    }
+    else
+        // Restart
+        Timer(time);
 }
 
-void Timer::restart()
+void Timer::pause()
 {
-    // Restart
+    // Pause
 
-    start(mSecs);
+    setStarted(false);
+    setRemTime(endTime - clock());
+    setPastTime(clock() - startTime);
 }
 
 void Timer::stop()
 {
     // Stop
 
-    // Set
-
-    // Out time
-    outTime = clock();
+    Timer(duration, false);
 }
 
 // --------------------------- Encapsulation ---------------------------
-
-// MSecs
-
-int Timer::getMSecs()
-{
-    // Get
-    return mSecs;
-}
-void Timer::setMSecs(int mSecs_)
-{
-    // Set
-    mSecs = mSecs_;
-}
 
 // Times
 
@@ -98,15 +100,67 @@ void Timer::setStartTime(clock_t startTime_)
     startTime = startTime_;
 }
 
-// Out
+// End
 
-clock_t Timer::getOutTime()
+clock_t Timer::getEndTime()
 {
     // Get
-    return outTime;
+    return endTime;
 }
-void Timer::setOutTime(clock_t outTime_)
+void Timer::setEndTime(clock_t endTime_)
 {
     // Set
-    outTime = outTime_;
+    endTime = endTime_;
+}
+
+// Past
+
+clock_t Timer::getPastTime()
+{
+    // Get
+    return pastTime;
+}
+void Timer::setPastTime(clock_t pastTime_)
+{
+    // Set
+    pastTime = pastTime_;
+}
+
+// Remaining
+
+clock_t Timer::getRemTime()
+{
+    // Get
+    return remTime;
+}
+void Timer::setRemTime(clock_t remTime_)
+{
+    // Set
+    remTime = remTime_;
+}
+
+// Duration
+
+clock_t Timer::getDuration()
+{
+    // Get
+    return duration;
+}
+void Timer::setDuration(clock_t duration_)
+{
+    // Set
+    duration = duration_;
+}
+
+// Started
+
+bool Timer::getStarted()
+{
+    // Get
+    return started;
+}
+void Timer::setStarted(bool started_)
+{
+    // Set
+    started = started_;
 }

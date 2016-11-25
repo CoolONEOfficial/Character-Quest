@@ -30,11 +30,9 @@ SOURCES += main.cpp \
     character.cpp \
     font.cpp \
     gmapslot.cpp \
-    label.cpp \
     rands.cpp \
     scene.cpp \
     screen.cpp \
-    text.cpp \
     timer.cpp \
     coord.cpp \
     gmap.cpp \
@@ -43,7 +41,13 @@ SOURCES += main.cpp \
     rect.cpp \
     saveslot.cpp \
     bobjcat.cpp \
-    pushmessage.cpp
+    pushmessage.cpp \
+    animation.cpp \
+    animationstring.cpp \
+    keycodes.cpp \
+    screencoord.cpp \
+    animationlabel.cpp \
+    label.cpp
 
 HEADERS += \
     biome.h \
@@ -56,7 +60,6 @@ HEADERS += \
     fonts.h \
     gmapslot.h \
     keycodes.h \
-    label.h \
     main.h \
     ncursesall.h \
     pushmessage.h \
@@ -65,14 +68,18 @@ HEADERS += \
     scene.h \
     scenes.h \
     screen.h \
-    text.h \
     timer.h \
     coord.h \
     gmap.h \
     gmaphome.h \
     gmapworld.h \
     rect.h \
-    saveslot.h
+    saveslot.h \
+    animation.h \
+    animationstring.h \
+    screencoord.h \
+    animationlabel.h \
+    label.h
 
 # NCurses lib
 
@@ -114,8 +121,4 @@ win32 {
 # Other
 
 # Icon
-win32:RC_FILE = resource.rc
-
-DISTFILES += \
-    icon.ico \
-    resource.rc
+RC_ICONS = icon.ico

@@ -4,29 +4,25 @@
 #include "rect.h"
 #include "coord.h"
 
-#include <ncursesall.h>
+#include "ncursesall.h"
 
 // --------------------------- Screen ---------------------------
 
-// Width / Height
-float screenWidth();
-float screenHeight();
-
 // Screen
-Rect *screen();
+int screenWidth(WINDOW* screen_);
+int screenHeight(WINDOW* screen_);
+Rect<Coord> screenRect(WINDOW* screen_);
 
-// Default
+// Default Screen
 
-// Width / Height
 const int screenWidthDefault = 80;
 const int screenHeightDefault = 24;
+const Rect<Coord> screenDefault = Rect<Coord>(Coord(0, 0), Coord(screenWidthDefault, screenHeightDefault));
 
-// Screen
-const Rect screenDefault = Rect(Coord(), screenWidthDefault, screenHeightDefault);
+// --------------------------- Align ---------------------------
 
-// Align
-int alignX(int val_, int scrWidth_ = screenWidth());
-int alignY(int val_, int scrHeight_ = screenHeight());
+float alignX(float x_, WINDOW* screen_);
+float alignY(float y_, WINDOW *screen_);
 
 #endif // _FILE_SCREEN_
 

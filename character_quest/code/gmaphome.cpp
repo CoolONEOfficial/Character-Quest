@@ -179,7 +179,7 @@ void GMapHome::generate(int dW, int dH)
     setGenerated(true);
 }
 
-void GMapHome::draw(Rect drawRect_, bool generate_)
+void GMapHome::draw(Rect<ScreenCoord> drawRect_, bool generate_)
 {
     // Draw
 

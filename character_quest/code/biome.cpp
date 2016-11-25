@@ -25,8 +25,8 @@ BObjCat *Biome::genCat(map<string, BObjCat *> mapCats)
     float mCatLuck = 0.0f;
     for(auto &mCat: mapCats)
     {
-        if(random > mCatLuck &&
-                random < mCatLuck + mCat.second->getLuck())
+        if(random >= mCatLuck &&
+                random <= mCatLuck + mCat.second->getLuck())
         {
             return mCat.second;
         }

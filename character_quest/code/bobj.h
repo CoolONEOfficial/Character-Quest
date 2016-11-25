@@ -1,7 +1,7 @@
 #ifndef _FILE_BOBJ_
 #define _FILE_BOBJ_
 
-#include <ncursesall.h>
+#include "ncursesall.h"
 
 // --------------------------- Biome Object ---------------------------
 

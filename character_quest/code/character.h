@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <ncursesall.h>
+#include "ncursesall.h"
 #include <cassert>
 
 using namespace std;
@@ -18,9 +18,6 @@ public:
                               int widthSmall_ = 4, int heightSmall_ = 5, vector<string> imageSmall_ = {""},
                               int widthNormal_ = 6, int heightNormal_ = 8, vector<string> imageNormal_ = {""},
                               int widthBig_ = 8, int heightBig_ = 10, vector<string> imageBig_ = {""});
-
-    // Draw
-    void draw(int dX, int dY, string size);
 
     // Images
     vector<string> imageSmall;
@@ -48,6 +45,9 @@ private:
     int widthBig;
     int heightBig;
 public:
+
+    // Draw
+    void draw(int x_, int y_, string size_);
 
     // --------------------------- Encapsulation ---------------------------
 

@@ -22,11 +22,8 @@
 
 // Save delete
 #define SAVE_DEL(pointer_) \
-    if(pointer_ != NULL) \
-{ \
     delete pointer_; \
-    pointer_ = nullptr; \
-}
+    pointer_ = nullptr;
 
 #endif // _FILE_SAVE_DELETE_POINTERS_
 
